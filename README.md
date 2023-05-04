@@ -1,5 +1,21 @@
 # guguooking
 
+## Southeast University
+
+### Software Engineering Course Project
+
+![](./resourses/logo-remove.png)
+
+#### member:
+
+Xiaoji Zheng
+
+Wenzhuo Tian
+
+Tianyu Hong
+
+Xingzhe Zhang
+
 ## Project setup
 ```
 yarn install
