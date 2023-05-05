@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: "main",
+  name: "Main",
   props: {},
   data() {
     return {

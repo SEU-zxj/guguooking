@@ -3,13 +3,13 @@ import { createRouter, createWebHashHistory } from "vue-router"
 const routes = [
     {
         path: '/',
-        redirect: "/main",
+        redirect: "/Main",
         component: () => import('@/App')             
     },
     {
-        path: '/main',
-        name: "main",
-        component: () => import('@/components/main')   
+        path: '/Main',
+        name: "Main",
+        component: () => import('@/components/Main')   
     },
 ]
 export const router = createRouter({
