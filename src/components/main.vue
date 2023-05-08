@@ -1,20 +1,360 @@
 <template>
   <div>
-    <p>this is {{ test }}.</p>
+    <el-carousel :interval="4000" type="card" height="40vh">
+      <el-carousel-item v-for="item in 6" :key="item">
+        <h3 text="2xl" justify="center">{{ item }}</h3>
+      </el-carousel-item>
+    </el-carousel>
+
+    <div class="ChooseOutterBox">
+      <div class="ChooseInnerBox">
+        <el-cascader
+          v-model="value"
+          :options="options"
+          @change="handleChange"
+          placeholder="请选择地点"
+        />
+      </div>
+
+      <div class="ChooseInnerBox">
+        <el-date-picker
+          v-model="timeRange"
+          type="daterange"
+          range-separator="To"
+          start-placeholder="Start date"
+          end-placeholder="End date"
+        />
+      </div>
+
+      <div class="ChooseInnerBox">
+        <el-input-number v-model="peopleNum" placeholder="·位客人" />
+      </div>
+
+      <div class="ChooseInnerBox">
+        <el-button type="primary">搜索</el-button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import { ref } from "vue";
 export default {
   name: "Main",
-  props: {},
-  data() {
+  setup() {
+    const value = ref([]);
+    const options = [
+      {
+        value: "guide",
+        label: "Guide",
+        children: [
+          {
+            value: "disciplines",
+            label: "Disciplines",
+            children: [
+              {
+                value: "consistency",
+                label: "Consistency",
+              },
+              {
+                value: "feedback",
+                label: "Feedback",
+              },
+              {
+                value: "efficiency",
+                label: "Efficiency",
+              },
+              {
+                value: "controllability",
+                label: "Controllability",
+              },
+            ],
+          },
+          {
+            value: "navigation",
+            label: "Navigation",
+            children: [
+              {
+                value: "side nav",
+                label: "Side Navigation",
+              },
+              {
+                value: "top nav",
+                label: "Top Navigation",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        value: "component",
+        label: "Component",
+        children: [
+          {
+            value: "basic",
+            label: "Basic",
+            children: [
+              {
+                value: "layout",
+                label: "Layout",
+              },
+              {
+                value: "color",
+                label: "Color",
+              },
+              {
+                value: "typography",
+                label: "Typography",
+              },
+              {
+                value: "icon",
+                label: "Icon",
+              },
+              {
+                value: "button",
+                label: "Button",
+              },
+            ],
+          },
+          {
+            value: "form",
+            label: "Form",
+            children: [
+              {
+                value: "radio",
+                label: "Radio",
+              },
+              {
+                value: "checkbox",
+                label: "Checkbox",
+              },
+              {
+                value: "input",
+                label: "Input",
+              },
+              {
+                value: "input-number",
+                label: "InputNumber",
+              },
+              {
+                value: "select",
+                label: "Select",
+              },
+              {
+                value: "cascader",
+                label: "Cascader",
+              },
+              {
+                value: "switch",
+                label: "Switch",
+              },
+              {
+                value: "slider",
+                label: "Slider",
+              },
+              {
+                value: "time-picker",
+                label: "TimePicker",
+              },
+              {
+                value: "date-picker",
+                label: "DatePicker",
+              },
+              {
+                value: "datetime-picker",
+                label: "DateTimePicker",
+              },
+              {
+                value: "upload",
+                label: "Upload",
+              },
+              {
+                value: "rate",
+                label: "Rate",
+              },
+              {
+                value: "form",
+                label: "Form",
+              },
+            ],
+          },
+          {
+            value: "data",
+            label: "Data",
+            children: [
+              {
+                value: "table",
+                label: "Table",
+              },
+              {
+                value: "tag",
+                label: "Tag",
+              },
+              {
+                value: "progress",
+                label: "Progress",
+              },
+              {
+                value: "tree",
+                label: "Tree",
+              },
+              {
+                value: "pagination",
+                label: "Pagination",
+              },
+              {
+                value: "badge",
+                label: "Badge",
+              },
+            ],
+          },
+          {
+            value: "notice",
+            label: "Notice",
+            children: [
+              {
+                value: "alert",
+                label: "Alert",
+              },
+              {
+                value: "loading",
+                label: "Loading",
+              },
+              {
+                value: "message",
+                label: "Message",
+              },
+              {
+                value: "message-box",
+                label: "MessageBox",
+              },
+              {
+                value: "notification",
+                label: "Notification",
+              },
+            ],
+          },
+          {
+            value: "navigation",
+            label: "Navigation",
+            children: [
+              {
+                value: "menu",
+                label: "Menu",
+              },
+              {
+                value: "tabs",
+                label: "Tabs",
+              },
+              {
+                value: "breadcrumb",
+                label: "Breadcrumb",
+              },
+              {
+                value: "dropdown",
+                label: "Dropdown",
+              },
+              {
+                value: "steps",
+                label: "Steps",
+              },
+            ],
+          },
+          {
+            value: "others",
+            label: "Others",
+            children: [
+              {
+                value: "dialog",
+                label: "Dialog",
+              },
+              {
+                value: "tooltip",
+                label: "Tooltip",
+              },
+              {
+                value: "popover",
+                label: "Popover",
+              },
+              {
+                value: "card",
+                label: "Card",
+              },
+              {
+                value: "carousel",
+                label: "Carousel",
+              },
+              {
+                value: "collapse",
+                label: "Collapse",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        value: "resource",
+        label: "Resource",
+        children: [
+          {
+            value: "axure",
+            label: "Axure Components",
+          },
+          {
+            value: "sketch",
+            label: "Sketch Templates",
+          },
+          {
+            value: "docs",
+            label: "Design Documentation",
+          },
+        ],
+      },
+    ];
+    const timeRange = ref([]);
+
+    const peopleNum = ref();
+
+    const handleChange = (value) => {
+      console.log(value);
+    };
     return {
-      test: "hhhh",
+      value,
+      options,
+      timeRange,
+      peopleNum,
+
+      handleChange,
     };
   },
-  components: {},
 };
 </script>
 
-<style></style>
+<style scoped>
+.el-carousel__item h3 {
+  color: #475669;
+  opacity: 0.75;
+  line-height: 40vh;
+  margin: 0;
+  text-align: center;
+}
+
+.el-carousel__item:nth-child(2n) {
+  background-color: #99a9bf;
+}
+
+.el-carousel__item:nth-child(2n + 1) {
+  background-color: #d3dce6;
+}
+
+.ChooseOutterBox {
+  width: 100vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+}
+.ChooseInnerBox {
+  padding: 0 2vw;
+}
+</style>
