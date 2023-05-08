@@ -30,24 +30,80 @@
       </el-sub-menu>
     </el-sub-menu>
     <el-menu-item index="3" disabled>Info</el-menu-item>
-    <el-menu-item index="4">Orders</el-menu-item>
+    <el-menu-item index="4" @click="dialogFormVisible = true">Orders</el-menu-item>
   </el-menu>
+
+
+    <el-dialog v-model="dialogFormVisible" title="Shipping address">
+    <el-form :model="form">
+      <el-form-item label="Promotion name" :label-width="formLabelWidth">
+        <el-input v-model="form.name" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="Zones" :label-width="formLabelWidth">
+        <el-select v-model="form.region" placeholder="Please select a zone">
+          <el-option label="Zone No.1" value="shanghai" />
+          <el-option label="Zone No.2" value="beijing" />
+        </el-select>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="FormCancle">Cancel</el-button>
+        <el-button type="primary" @click="FormConfirm">
+          Confirm
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
+
   <router-view></router-view>
 </template>
 
 <script>
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 export default {
   setup() {
     const activeIndex = ref("1");
     const activeIndex2 = ref("1");
+    var dialogFormVisible = ref(false);
+    var form = reactive({
+      name: '',
+      region: '',
+      date1: '',
+      date2: '',
+      delivery: false,
+      type: [],
+      resource: '',
+      desc: '',
+    })
+
     const handleSelect = (key, keyPath) => {
       console.log(key, keyPath);
     };
+
+    function FormCancle() {
+      dialogFormVisible.value = false;
+      console.log(dialogFormVisible)
+      form.name = ""
+      form.region = ""
+    }
+
+    function FormConfirm() {
+      dialogFormVisible.value = false
+      console.log("–’√˚ «" + form.name)
+      console.log("region «" + form.region)
+    }
+
     return {
       activeIndex,
       activeIndex2,
+      dialogFormVisible,
+      form,
+
+
       handleSelect,
+      FormCancle,
+      FormConfirm
     };
   },
 };
