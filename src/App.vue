@@ -30,11 +30,12 @@
       </el-sub-menu>
     </el-sub-menu>
     <el-menu-item index="3" disabled>Info</el-menu-item>
-    <el-menu-item index="4" @click="dialogFormVisible = true">Orders</el-menu-item>
+    <el-menu-item index="4" @click="dialogFormVisible = true"
+      >Orders</el-menu-item
+    >
   </el-menu>
 
-
-    <el-dialog v-model="dialogFormVisible" title="Shipping address">
+  <el-dialog v-model="dialogFormVisible" title="Shipping address">
     <el-form :model="form">
       <el-form-item label="Promotion name" :label-width="formLabelWidth">
         <el-input v-model="form.name" autocomplete="off" />
@@ -49,9 +50,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="FormCancle">Cancel</el-button>
-        <el-button type="primary" @click="FormConfirm">
-          Confirm
-        </el-button>
+        <el-button type="primary" @click="FormConfirm"> Confirm </el-button>
       </span>
     </template>
   </el-dialog>
@@ -67,15 +66,15 @@ export default {
     const activeIndex2 = ref("1");
     var dialogFormVisible = ref(false);
     var form = reactive({
-      name: '',
-      region: '',
-      date1: '',
-      date2: '',
+      name: "",
+      region: "",
+      date1: "",
+      date2: "",
       delivery: false,
       type: [],
-      resource: '',
-      desc: '',
-    })
+      resource: "",
+      desc: "",
+    });
 
     const handleSelect = (key, keyPath) => {
       console.log(key, keyPath);
@@ -83,15 +82,15 @@ export default {
 
     function FormCancle() {
       dialogFormVisible.value = false;
-      console.log(dialogFormVisible)
-      form.name = ""
-      form.region = ""
+      console.log(dialogFormVisible);
+      form.name = "";
+      form.region = "";
     }
 
     function FormConfirm() {
-      dialogFormVisible.value = false
-      console.log("ÐÕÃûÊÇ" + form.name)
-      console.log("regionÊÇ" + form.region)
+      dialogFormVisible.value = false;
+      console.log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" + form.name);
+      console.log("regionï¿½ï¿½" + form.region);
     }
 
     return {
@@ -100,10 +99,9 @@ export default {
       dialogFormVisible,
       form,
 
-
       handleSelect,
       FormCancle,
-      FormConfirm
+      FormConfirm,
     };
   },
 };
@@ -114,7 +112,7 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  /*text-align: center;*/
   color: #2c3e50;
   margin: 0;
   height: 100%;

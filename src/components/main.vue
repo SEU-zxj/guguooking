@@ -35,9 +35,11 @@
       </div>
     </div>
     <!--[按地点]按地点横排-->
-    <el-text size="large">快速轻松的规划旅行</el-text>
+    <div class="TextHeader">
+      <h1>快速轻松的规划旅行</h1>
+    </div>
     <div class="PositionBox">
-      <el-row gutter="50" class="RowLayout">
+      <el-row gutter="50" class="RowLayout1">
         <el-col v-for="o in 4" :key="o" :span="5" :offset="o == 1 ? 2 : 0">
           <el-card :body-style="{ padding: '0px' }">
             <img
@@ -57,7 +59,9 @@
     </div>
 
     <!--[文章推荐]精彩下一站，灵感这里找-->
-    <el-text size="large">精彩下一站，灵感这里找</el-text>
+    <div class="TextHeader">
+      <h1>精彩下一站，灵感这里找</h1>
+    </div>
     <div class="NoteBox">
       <el-row class="RowLayout" :gutter="10">
         <el-col class="ColLayout" :span="11" :offset="1">
@@ -70,15 +74,84 @@
             </el-image>
           </div>
         </el-col>
-        <el-col :span="11"> </el-col>
+        <el-col class="ColLayout" :span="11">
+          <el-row class="UpperFigureOuterBox">
+            <el-image
+              style="width: 45%; height: 100%"
+              src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+              :fit="imgFitCover"
+            ></el-image>
+            <div class="textBox">
+              <h1>南京</h1>
+              <el-text truncated>
+                南京很美南京很美南京很美南京很美南京很美
+                南京很美南京很美南京很美南京很美南京很美
+              </el-text>
+            </div>
+          </el-row>
+          <el-row class="LowerFigureOuterBox">
+            <div class="textBox">
+              <h1>北京</h1>
+              <el-text truncated>
+                北京很美北京很美北京很美北京很美北京很美
+                北京很美北京很美北京很美北京很美北京很美
+              </el-text>
+            </div>
+            <el-image
+              style="width: 45%; height: 100%"
+              src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+              :fit="imgFitCover"
+            ></el-image>
+          </el-row>
+        </el-col>
       </el-row>
     </div>
 
     <!--[按评分推荐]最受用户欢迎的酒店-->
-    <div class="RatingBox"></div>
+    <div class="TextHeader">
+      <h1>用户最喜爱的酒店</h1>
+    </div>
+    <div class="RatingBox">
+      <el-row gutter="50" class="RowLayout">
+        <el-col v-for="o in 4" :key="o" :span="5" :offset="o == 1 ? 2 : 0">
+          <el-card :body-style="{ padding: '0px' }">
+            <img
+              src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+              class="image"
+            />
+            <div style="padding: 14px">
+              <span>酒店名称</span>
+              <p><el-text size="small">酒店地点</el-text></p>
+
+              <p><el-text size="small">起价：838元</el-text></p>
+
+              <div class="bottom">
+                <p>4.8分 <el-text size="small">2132条用户评论</el-text></p>
+                <el-button text>查看</el-button>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
 
     <!--[按住宿类型]-->
-    <div class="TypeBox"></div>
+    <div class="TextHeader">
+      <h1>根据住宿类型浏览</h1>
+    </div>
+    <div class="TypeBox">
+      <el-row :gutter="60" class="TypeRowLayout">
+        <el-col v-for="o in 3" :key="o" :span="6" :offset="o == 1 ? 3 : 0">
+          <el-image
+            src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+            class="image"
+            style="width: 100%; height: 100%"
+            :fit="imgFitCover"
+          ></el-image>
+          <p>{{ hotelType[o - 1] }}</p>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
@@ -360,6 +433,8 @@ export default {
     const imgFitCover = "cover";
     const peopleNum = ref();
 
+    const hotelType = ["酒店", "公寓", "民宿"];
+
     var LocationInfo = [
       {
         imgUrl:
@@ -399,6 +474,7 @@ export default {
       LocationInfo,
       currentDate,
       imgFitCover,
+      hotelType,
 
       handleChange,
     };
@@ -459,6 +535,9 @@ export default {
 .PositionBox {
   text-align: center;
 }
+.RowLayout1 {
+  width: 100vw;
+}
 .RowLayout {
   width: 100vw;
   height: 50vh;
@@ -474,6 +553,37 @@ export default {
 }
 .leftFigureBox {
   width: 100%;
-  height: 30vh;
+  height: 50vh;
+}
+.UpperFigureOuterBox {
+  width: 100%;
+  height: 50%;
+}
+.LowerFigureOuterBox {
+  width: 100%;
+  height: 50%;
+}
+.textBox {
+  width: 50%;
+  height: 100%;
+}
+
+.NoteBox {
+  height: 50vh;
+  width: 100vw;
+}
+
+.TypeBox {
+  height: 40vh;
+  width: 100%;
+}
+.TypeRowLayout {
+  height: 100%;
+  width: 100%;
+}
+
+.TextHeader {
+  width: 100%;
+  margin-left: 10%;
 }
 </style>
