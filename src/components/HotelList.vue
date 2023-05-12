@@ -1,40 +1,42 @@
 <template>
   <div class="TotleListBox">
     <el-row :gutter="40" style="width: 100%">
-      <el-col :span="6" :offset="0" style="height: 50vh">
-        <el-card style="width: 100%; margin: 2% 2%" shadow="always">
-          <el-form
-            label-width="auto"
-            :model="formLabelAlign"
-            style="max-width: 100%"
-          >
-            <el-form-item label="地点" class="formItem">
-              <el-cascader
-                v-model="formLabelAlign.loaction"
-                :options="options"
-                placeholder="请选择地点"
-              />
-            </el-form-item>
-            <el-form-item label="TimeRange" class="formItem">
-              <el-date-picker
-                v-model="formLabelAlign.selectTime"
-                type="daterange"
-                range-separator="To"
-                start-placeholder="Start"
-                end-placeholder="End"
-                size="small"
-              />
-            </el-form-item>
-            <el-form-item label="RoomNumber" class="formItem">
-              <el-input-number v-model="formLabelAlign.roomNumber" :min="1" />
-            </el-form-item>
-            <div class="SearchButtonBox">
-              <el-button style="margin-left: 70%">🔍搜索</el-button>
-            </div>
-          </el-form>
-        </el-card>
+      <el-col :span="7" :offset="0" style="height: 50vh">
+        <el-affix :offset="120" style="width: 100%">
+          <el-card style="width: 100%; margin: 2% 2%" shadow="always">
+            <el-form
+              label-width="auto"
+              :model="formLabelAlign"
+              style="max-width: 100%"
+            >
+              <el-form-item label="地点" class="formItem">
+                <el-cascader
+                  v-model="formLabelAlign.loaction"
+                  :options="options"
+                  placeholder="请选择地点"
+                />
+              </el-form-item>
+              <el-form-item label="TimeRange" class="formItem">
+                <el-date-picker
+                  v-model="formLabelAlign.selectTime"
+                  type="daterange"
+                  range-separator="To"
+                  start-placeholder="Start"
+                  end-placeholder="End"
+                  size="small"
+                />
+              </el-form-item>
+              <el-form-item label="RoomNumber" class="formItem">
+                <el-input-number v-model="formLabelAlign.roomNumber" :min="1" />
+              </el-form-item>
+              <div class="SearchButtonBox">
+                <el-button style="margin-left: 70%">🔍搜索</el-button>
+              </div>
+            </el-form>
+          </el-card>
+        </el-affix>
       </el-col>
-      <el-col :span="18">
+      <el-col :span="16">
         <div v-for="o in 10" :key="o" class="HotelCardOutterBox">
           <el-card class="HotelCardBox">
             <el-row :gutter="20" style="height: 100%; width: 100%">
@@ -67,6 +69,25 @@
             </el-row>
           </el-card>
         </div>
+      </el-col>
+    </el-row>
+  </div>
+  <div class="BottomInfoBox">
+    <el-row :gutter="30" style="width: 100%; height: 100%">
+      <el-col :span="15" :offset="1" class="linkInfoBox">
+        <el-link type="primary" href="https://element-plus.org" target="_blank"
+          >GitHub仓库</el-link
+        >
+        <el-link type="primary" href="https://element-plus.org" target="_blank"
+          >做的不错? 老板v一杯coffee?</el-link
+        >
+      </el-col>
+      <el-col :span="8">
+        <el-image
+          :src="require('@/assets/logo-remove-white.png')"
+          :fit="imgFitContain"
+          class="BottomImageBox"
+        ></el-image>
       </el-col>
     </el-row>
   </div>
@@ -393,5 +414,24 @@ export default {
   font-size: 20px;
   font-weight: bold;
   color: black;
+}
+
+.BottomInfoBox {
+  width: 100%;
+  background-color: black;
+  height: 20vh;
+}
+
+.linkInfoBox {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.BottomImageBox {
+  width: 80%;
+  height: 80%;
 }
 </style>
