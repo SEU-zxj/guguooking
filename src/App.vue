@@ -7,14 +7,17 @@
     text-color="#fff"
     active-text-color="#000000"
     :ellipsis="false"
+    style="padding-left: 10%;"
     @select="handleSelect"
   >
+  
     <el-menu-item index="0">
-      <el-image
+          <el-image
         style="height: 100%"
         :src="require('@/assets/logo-remove-white.png')"
       />
     </el-menu-item>
+
     <div class="flex-grow" />
     <el-menu-item index="1">
       <!-- 按钮1 币种 -->
@@ -24,7 +27,9 @@
         content="选择币种"
         placement="bottom"
       >
-        <el-button class="btnMenu" size="large" color="#000000" tag="b" :dark="isDark" @click="dialogFormVisible_money = true">CNY</el-button>
+        <el-button class="btnMenu" style="width: 60px;height: 50px;" color="#000000" :dark="isDark" @click="dialogFormVisible_money = true">
+          <el-text tag="b" size="large" style="color:#fff;">CNY</el-text>
+        </el-button>
       </el-tooltip>
       
       <!-- 按钮2 语言 -->
@@ -34,8 +39,8 @@
         content="选择语言"
         placement="bottom"
       >
-        <el-button class="btnMenu" size="large" color="#000000" :dark="isDark"  @click="dialogFormVisible_language = true">
-          <el-image style="width: 25px; height: 25px" :src="require('@/assets/language/China.png')" :fit="fit" />
+        <el-button class="btnMenu" style="width: 50px;height: 50px;" color="#000000" :dark="isDark"  @click="dialogFormVisible_language = true">
+          <el-image style="width: 25px; height: 25px" :src="require('@/assets/menu_icon/language/China.png')" :fit="fit" />
         </el-button>
       </el-tooltip>
      <!-- 按钮3 关注公众号 -->
@@ -45,8 +50,8 @@
       trigger="hover"
       >
         <template #reference>
-          <el-button class="btnMenu" size="large" color="#000000" :dark="isDark" >
-            <el-image style="width: 25px; height: 25px" :src="require('@/assets/weiChat.svg')" :fit="fit" />
+          <el-button class="btnMenu" style="width: 50px;height: 50px;" color="#000000" :dark="isDark" >
+            <el-image style="width: 25px; height: 25px" :src="require('@/assets/menu_icon/weiChat.svg')" :fit="fit" />
           </el-button>
         </template>
         <div style="text-align: center;" >
@@ -69,16 +74,16 @@
           content="联系客服"
           placement="bottom"
         >
-          <el-button class="btnMenu" size="large" color="#000000" :dark="isDark" >
-            <el-image style="width: 25px; height: 25px" :src="require('@/assets/Question.svg')" :fit="fit" />
+          <el-button class="btnMenu" style="width: 50px;height: 50px;" color="#000000" :dark="isDark" >
+            <el-image style="width: 25px; height: 25px" :src="require('@/assets/menu_icon/Question.svg')" :fit="fit" />
           </el-button>
         </el-tooltip>
       <!-- 按钮5 上线我的住宿 -->
-      <el-button size="large" color="#000000" :dark="isDark">上线我的住宿</el-button>
+      <el-button size="large" style="width: 120px;height: 40px;border-color: #fff;" color="#000000" :dark="isDark">上线我的住宿</el-button>
       <!-- 按钮6 注册 -->
-      <el-button @click="dialogFormVisible_add = true">注册</el-button>
+      <el-button style="height: 40px;" @click="dialogFormVisible_add = true">注册</el-button>
       <!-- 按钮7 登录 -->
-        <el-button @click="dialogFormVisible_log = true">登录</el-button>      
+      <el-button style="height: 40px;" @click="dialogFormVisible_log = true">登录</el-button>      
     </el-menu-item>
     
   </el-menu>
@@ -86,7 +91,7 @@
   <!-- 选择币种 对话框 -->
   <el-dialog 
     v-model="dialogFormVisible_money" 
-    style="text-align:left;margin-top: 2%;border-radius: 8px;"
+    style="text-align:left;margin-top: 30px;border-radius: 8px;"
     width="65%"
     align-center
   >
@@ -120,6 +125,8 @@
         </el-col>
       </el-row>
     <el-row :gutter="10">
+      <el-col :span="6"><el-card shadow="hover" style="border: 0px;"> 
+          <el-text style="color:#212121;" size="large">住宿地使用的货币</el-text><br><el-text >£$€</el-text></el-card></el-col>
       <el-col :span="6"><el-card shadow="hover" style="background-color: #f0f6fd;border: 0px;" @click="dialogFormVisible_money = false"> 
         <el-row>
           <el-col :span="19">
@@ -131,8 +138,6 @@
           </el-col>
         </el-row>
         </el-card></el-col>
-      <el-col :span="6"><el-card shadow="hover" style="border: 0px;"> 
-        <el-text style="color:#212121;" size="large">住宿地使用的货币</el-text><br><el-text >£$€</el-text></el-card></el-col>
       <el-col :span="6"><el-card shadow="hover" style="border: 0px;"> 
         <el-text style="color:#212121;" size="large">丹麦克朗</el-text><br><el-text >DKK</el-text></el-card></el-col>
       <el-col :span="6"><el-card shadow="hover" style="border: 0px;"> 
@@ -224,7 +229,7 @@
       </el-row>
       <el-row :gutter="10">
         <el-col :span="6"><el-card shadow="hover" style="border: 0px;"> 
-          <el-image style="width: 20px; height: 20px;vertical-align: middle;" :src="require('@/assets/language/UK.png')" :fit="fit" />
+          <el-image style="width: 20px; height: 20px;vertical-align: middle;" :src="require('@/assets/menu_icon/language/UK.png')" :fit="fit" />
           <el-text style="color:#212121;vertical-align: middle;" size="large">&nbsp;&nbsp;&nbsp;English(UK)</el-text></el-card></el-col>
       </el-row>
       <el-row >
@@ -234,12 +239,12 @@
         </el-row>
       <el-row :gutter="10">
          <el-col :span="6"><el-card shadow="hover" style="border: 0px;"> 
-          <el-image style="width: 20px; height: 20px;vertical-align: middle;" :src="require('@/assets/language/UK.png')" :fit="fit" />
+          <el-image style="width: 20px; height: 20px;vertical-align: middle;" :src="require('@/assets/menu_icon/language/UK.png')" :fit="fit" />
           <el-text style="color:#212121;vertical-align: middle;" size="large">&nbsp;&nbsp;&nbsp;English(UK)</el-text></el-card></el-col>
         <el-col :span="6"><el-card shadow="hover" style="height: 60px;background-color: #f0f6fd;border: 0px;" @click="dialogFormVisible_language = false"> 
           <el-row>
             <el-col :span="19">
-              <el-image style="width: 20px; height: 20px;vertical-align: middle;" :src="require('@/assets/language/China.png')" :fit="fit" />
+              <el-image style="width: 20px; height: 20px;vertical-align: middle;" :src="require('@/assets/menu_icon/language/China.png')" :fit="fit" />
               <el-text style="color:#3c8dea;vertical-align: middle;" size="large">&nbsp;&nbsp;&nbsp;简体中文</el-text>
             </el-col>
             <el-col :span="5">
@@ -531,7 +536,6 @@ export default{
       //登录
       myLogForm, dialogFormVisible_log, logForm, logRules,
 
-
       /* 函数 */
       handleSelect,
       checkPassword2, addFormCancle, addFormConfirm,
@@ -557,12 +561,14 @@ export default{
   flex-grow: 1;
 }
 .myMenu {
-  height: 8%;
+  height: 80px;
+  padding-top: 10px;
+  padding-right: 10%;
 }
 /**按钮 menu */
 .btnMenu{
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
 }
 /**布局 */
 .el-row {
