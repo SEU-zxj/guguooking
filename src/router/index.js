@@ -24,15 +24,10 @@ const routes = [
         component: () => import('@/components/HotelDetail')
     },
     {
-        path: '/BookRoom',
-        name: 'BookRoom',
-        component: () => import('@/components/BookRoom')
+        path: '/CheckOrder',
+        name: 'CheckOrder',
+        component: () => import('@/components/CheckOrder')
     },
-    {
-        path: '/OrderList',
-        name: 'OrderList',
-        component: () => import('@/components/OrderList')
-    }
 ]
 export const router = createRouter({
   history: createWebHashHistory(),

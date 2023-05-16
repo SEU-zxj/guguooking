@@ -59,7 +59,7 @@
           <div style="display: flex">
             <div style="flex: 1"></div>
               <el-image
-              style="width:70%;"
+              style="width:80%;"
               :src="require('@/assets/QRcode.png')"
             />
             <div style="flex: 1"></div>
@@ -81,11 +81,31 @@
       <!-- 按钮5 上线我的住宿 -->
       <el-button size="large" style="width: 120px;height: 40px;border-color: #fff;" color="#000000" :dark="isDark">上线我的住宿</el-button>
       <!-- 按钮6 注册 -->
-      <el-button style="height: 40px;" @click="dialogFormVisible_add = true">注册</el-button>
+      <el-button v-if="!isLogin" style="height: 40px;" @click="dialogFormVisible_add = true">注册</el-button>
       <!-- 按钮7 登录 -->
-      <el-button style="height: 40px;" @click="dialogFormVisible_log = true">登录</el-button>      
+      <el-button v-if="!isLogin" style="height: 40px;" @click="dialogFormVisible_log = true">登录</el-button>  
+      <!-- 按钮8 个人账户 -->
+        <el-popover v-if="isLogin" popper-class="submenu-popover" placement="top-end" :width="220" trigger="click">
+        <template #reference>
+          <el-button class="btnMenu" style="width: auto;height: 50px;" color="#000000" :dark="isDark">
+            <el-image style="width: 32px; height: 32px;border: solid 2px #f2b509; border-radius: 50%" :src="require('@/assets/menu_icon/headImg.png')" :fit="fit" />
+            <el-text style="text-align: left;margin-left: 10px;">
+              <el-text tag="b" size="large" style="color: #fff;">你的账户</el-text><br>
+              <el-text style="color:#f2b509;">Gugugu 1级会员</el-text>              
+            </el-text>
+          </el-button>
+        </template>
+        <div v-for="item in subMenu" :key="item">
+            <el-row class="submenu-row" style="height: 40px;" align="middle" @click="subMenufunc(item.func)">
+              <el-col style="padding-left: 5%;">
+                <el-image style="width: 23px;vertical-align: middle;" :src="require( '@/assets/menu_icon/'+item.icon)" :fit="fit" />
+                <el-text style="color: #000000;vertical-align: middle;">{{ "&nbsp;&nbsp;"+item.name }}</el-text>
+              </el-col>
+            </el-row>          
+        </div>
+      </el-popover>
     </el-menu-item>
-    
+
   </el-menu>
 
   <!-- 选择币种 对话框 -->
@@ -269,16 +289,16 @@
       label-position="top"
       label-width="auto"
       :model="logForm"
-      style="width: 90%;"
+      style="width: 60%;margin-left: 20%;"
       size="default"
       
     >
     <el-form-item label="" prop="checked">
       <el-checkbox v-model="logForm.checked">
-        <el-text>我已阅读并同意</el-text>
-          <el-link href="https://element-plus.org" type="primary" :underline="false">使用条款</el-link>
+        <el-text >我已阅读并同意</el-text>
+          <el-link href="https://element-plus.org" type="primary" :underline="false" >使用条款</el-link>
           <el-text>及</el-text>
-          <el-link href="https://element-plus.org" type="primary" :underline="false">隐私声明</el-link>
+          <el-link href="https://element-plus.org" type="primary" :underline="false" >隐私声明</el-link>
       </el-checkbox>
     </el-form-item>
     
@@ -310,7 +330,7 @@
       label-position="top"
       label-width="120px"
       :model="addForm"
-      style="width: 90%;text-align: center;"
+      style="width: 60%;margin-left: 20%;"
       size="default"
     >
     <el-form-item label="" prop="checked">
@@ -346,10 +366,15 @@
 
 <script>
 import { reactive, ref, unref } from "vue";
+import { ElMessage } from 'element-plus'
 // import { useRouter } from 'vue-router'
 
 export default{
   setup() {
+    // 是否登录
+    var isLogin = ref(true)
+    // var isLogin = ref(false)
+
     const activeIndex = ref('1')
     const activeIndex2 = ref('1')
     const handleSelect = (key, keyPath) => {
@@ -367,6 +392,38 @@ export default{
     const languageForm = reactive({
       kindOflanguage: '',
     })
+    /* 你的账户 */
+    const subMenu = [
+      {
+        name: "管理账号",
+        icon: 'my_icon/user.svg',
+        func: 0,
+      },
+      {
+        name: "订单和行程",
+        icon: "my_icon/order.svg",
+        func: 1,
+      },
+      {
+        name: "Gugugu会员奖励计划",
+        icon: "my_icon/vip.svg",
+        func: 2,
+      },
+      {
+        name: "退出账号",
+        icon: "my_icon/logout.svg",
+        func: 3,
+      },
+    ]
+    const subMenufunc = (index) => {
+      switch(index){
+        case 0: dialogFormVisible_add = true;break;
+        case 1: break;
+        case 2: break;
+        case 3: isLogin.value = false;break;
+        default:break;
+      }
+    }
     /*注册*/
     const myAddForm = ref(null)
     var dialogFormVisible_add = ref(false)//register对话框显示
@@ -414,6 +471,20 @@ export default{
           dialogFormVisible_add.value = false
           console.log("注册 表单验证通过-all")
           // 接口
+          if(true){//成功
+            ElMessage({
+              showClose: true,
+              message: '注册成功！',
+              type: 'success',
+            })
+            isLogin.value = true
+          }else{
+            ElMessage({
+              showClose: true,
+              message: '注册失败',
+              type: 'error',
+            })
+          }
           console.log(dialogFormVisible_add)
           console.log("电话=" + addForm.tel)
           console.log("密码=" + addForm.pass)
@@ -505,6 +576,18 @@ export default{
           dialogFormVisible_log.value = false
           console.log("log表单验证通过-all")
           // 接口
+          //成功
+          if (true) {
+            isLogin.value = true
+          } else {
+            ElMessage({
+              showClose: true,
+              message: '您还没有注册账户，请先注册',
+            })
+            dialogFormVisible_log.value = false
+            dialogFormVisible_add.value = true
+          }
+
           console.log(dialogFormVisible_log)
           console.log("电话=" + logForm.tel)
           console.log("密码=" + logForm.pass)
@@ -525,12 +608,14 @@ export default{
 
     return {
       /* 变量 */
+      isLogin,// 是否登录 
       activeIndex,
       activeIndex2,
       //币种
       dialogFormVisible_money, moneyForm,
       // 语言
       dialogFormVisible_language, languageForm,
+      subMenu, subMenufunc,
       //注册
       myAddForm, dialogFormVisible_add, addForm, addRules,
       //登录
@@ -566,9 +651,17 @@ export default{
   padding-right: 10%;
 }
 /**按钮 menu */
-.btnMenu{
+.myMenu .btnMenu{
   width: 50px;
   height: 50px;
+}
+.submenu-popover {
+  height: auto; 
+  overflow: auto;
+  align-content: center;
+}
+.submenu-row:hover{
+  background-color: #f2f2f2;
 }
 /**布局 */
 .el-row {

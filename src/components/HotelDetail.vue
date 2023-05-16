@@ -37,23 +37,13 @@
 
   <div class="roomTableBox">
     <h2>空房情况</h2>
-    <el-table :data="emptyRoomInfo" border style="width: 100%">
-      <el-table-column prop="roomName" label="房间名称" width="100" />
-      <el-table-column prop="roomBriefInfo" label="提供" width="300" />
-      <el-table-column prop="roomDetail" label="详细信息" width="500" />
-      <el-table-column label="预定">
-        <template #default="scope">
-          <el-input-number
-            v-model="chooseRoomNumbers[scope.$index]"
-            :min="0"
-            :max="scope.row.availableMax"
-            @change="handleInputNumberChange(scope.$index, scope.row)"
-          />
-        </template>
-      </el-table-column>
+    <el-table :data="tableData" border style="width: 100%">
+      <el-table-column prop="date" label="Date" width="180" />
+      <el-table-column prop="name" label="Name" width="180" />
+      <el-table-column prop="address" label="Address" />
     </el-table>
     <div style="margin: 2% 0 0 80%">
-      <el-button type="primary" @click="bookingClick">现在就预定</el-button>
+      <el-button type="primary">现在就预定</el-button>
     </div>
   </div>
 
@@ -177,38 +167,28 @@ export default {
       "免费WiFi",
     ];
     const imgFitContain = "cover";
-    const emptyRoomInfo = reactive([
+    const tableData = reactive([
       {
-        roomId: 1,
-        roomName: "标间",
-        roomBriefInfo: "这是一个标间，非常好！niceeeeee",
-        roomDetail: [
-          "可住2人",
-          "3399/天",
-          "提前付款",
-          "不可退款",
-          "免费提供接送机",
-        ],
-        availableMax: 10,
+        date: "2016-05-03",
+        name: "Tom",
+        address: "No. 189, Grove St, Los Angeles",
       },
       {
-        roomId: 2,
-        roomName: "大床房",
-        roomBriefInfo: "这是一个大床房，非常好！niceeeeee",
-        roomDetail: [
-          "可住1-2人",
-          "339/天",
-          "提前付款",
-          "不可退款",
-          "免费提供接送机",
-        ],
-        availableMax: 3,
+        date: "2016-05-02",
+        name: "Tom",
+        address: "No. 189, Grove St, Los Angeles",
+      },
+      {
+        date: "2016-05-04",
+        name: "Tom",
+        address: "No. 189, Grove St, Los Angeles",
+      },
+      {
+        date: "2016-05-01",
+        name: "Tom",
+        address: "No. 189, Grove St, Los Angeles",
       },
     ]);
-
-    //当接收到后端传过来的空房信息之后，要初始化对应的用户选择房间数量数组
-    //方便<input-number>标签进行v-model绑定
-    var chooseRoomNumbers = ref([0, 0]);
 
     function HandleClick() {
       console.log(activeTag);
@@ -222,35 +202,15 @@ export default {
       }
       return showTag;
     });
-
-    function handleInputNumberChange(index, row) {
-      console.log(chooseRoomNumbers.value[index]);
-    }
-
-    function bookingClick() {
-      console.log("点击按钮");
-      for (var i = 0; i < chooseRoomNumbers.value.length; i++) {
-        console.log(
-          "选择了房间id为" +
-            emptyRoomInfo[i].roomId +
-            "的房间" +
-            chooseRoomNumbers.value[i] +
-            "个"
-        );
-      }
-    }
     return {
       detailInfo,
       imgFitContain,
       tagIndex,
       commentInfo,
-      emptyRoomInfo,
-      chooseRoomNumbers,
 
       HandleClick,
       activeTag,
-      handleInputNumberChange,
-      bookingClick,
+      tableData,
     };
   },
 };
