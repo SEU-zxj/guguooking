@@ -27,6 +27,11 @@ const routes = [
         path: '/BookRoom',
         name: 'BookRoom',
         component: () => import('@/components/BookRoom')
+    },
+    {
+        path: '/OrderList',
+        name: 'OrderList',
+        component: () => import('@/components/OrderList')
     }
 ]
 export const router = createRouter({
