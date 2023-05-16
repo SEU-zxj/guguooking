@@ -28,6 +28,11 @@ const routes = [
         name: 'CheckOrder',
         component: () => import('@/components/CheckOrder')
     },
+    {
+        path: '/OrderList',
+        name: 'OrderList',
+        component: () => import('@/components/OrderList')
+    }
 ]
 export const router = createRouter({
   history: createWebHashHistory(),
