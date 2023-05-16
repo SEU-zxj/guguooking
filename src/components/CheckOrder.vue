@@ -19,7 +19,7 @@
             <div v-if="numOfOrder > 0">
               <el-text style="color: #000000;font-size: xx-large;" tag="b">订单和行程</el-text>
               <div v-for="(order,index) in orders" :key="order" style="margin-top: 10px;">
-                <el-card>
+                <el-card shadow="hover" class="orderCard">
                   <el-row :gutter="0">
                     <el-col :span="12">
                       <el-text style="color: #000000;font-size: large;" tag="b">{{ order.hotelName }}</el-text><br>
@@ -122,7 +122,7 @@
 
 <script>
 // import { defineComponent } from '@vue/composition-api'
-import { ref , reactive} from "vue"
+import { ref } from "vue"
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 
@@ -213,4 +213,7 @@ export default ({
   min-height: 600px;
 }
 
+.orderCard {
+  border-radius: 16px;
+}
 </style>
