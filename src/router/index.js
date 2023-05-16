@@ -32,6 +32,11 @@ const routes = [
         path: '/OrderList',
         name: 'OrderList',
         component: () => import('@/components/OrderList')
+    },
+    {
+        path: '/HotelOrder',
+        name: 'HotelOrder',
+        component: () => import('@/components/HotelOrder')
     }
 ]
 export const router = createRouter({
