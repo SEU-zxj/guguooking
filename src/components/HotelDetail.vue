@@ -94,10 +94,14 @@
 
 <script>
 import { computed, reactive, ref } from "vue";
+import http from "@/plugins/axiosInstance";
+import store from "@/store/index";
+
 export default {
   name: "HotelDetail",
   setup() {
-    const detailInfo = reactive({
+    const detailInfo = reactive(
+      {
       hotelName: "东南大学九龙湖宾馆",
       hotelLocation: "中国 江苏 南京 江宁区",
       figURLs: [
@@ -213,6 +217,25 @@ export default {
       tableData,
     };
   },
+  mounted(){
+    http.post(store.state.serverAddr + "/hotelDetail",
+      {
+        hotelId: 1,
+      }
+    ).then(
+      (res) => {
+        console.log(res.data.detailInfo);
+        console.log(this.detailInfo);
+        this.detailInfo.hotelName = res.data.detailInfo.hotelName;
+        this.detailInfo.hotelLocation = res.data.detailInfo.hotelLocation;
+        this.detailInfo.figURLs = res.data.detailInfo.figURLs;
+        this.detailInfo.intro = res.data.detailInfo.intro;
+      },
+      (err) => {
+        console.log(err)
+      }
+    )
+  }
 };
 </script>
 

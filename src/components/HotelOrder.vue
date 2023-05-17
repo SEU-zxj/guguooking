@@ -104,7 +104,7 @@
                             type="info"
                             :closable="false"
                             show-icon
-                            style="height: 65px;margin-bottom: 10px;"
+                            style="min-height: 65px;margin-bottom: 10px;"
                         >
                         <div style="vertical-align: middle;">
                             <el-text>快完成啦！将带</el-text><el-text style="color: red;">*</el-text>
@@ -115,15 +115,16 @@
                             :rules="rules"
                             ref="ruleForms"
                             :model="orderForm"
-                            label-width="120px"
-                            style="width: 100%;"
+                            label-position="top"
+                            label-width="200px"
+                            style="width: 80%;"
                         >
-                            <el-form-item label="电话号码" prop="phoneNumber">>
+                            <el-form-item label="电话号码" prop="phoneNumber">
                                 <el-input v-model="orderForm.phoneNumber" placeholder="请输入电话号码">
                                     <template #prepend>+86</template>
                                 </el-input>
                             </el-form-item>
-                            <el-form-item label="电子邮箱地址" prop="userEmail">>
+                            <el-form-item label="电子邮箱地址" prop="userEmail">
                                 <el-input v-model="orderForm.userEmail" placeholder="温馨提示:填写后检查一下, 避免拼写错误"/>
                             </el-form-item>
 
@@ -181,13 +182,20 @@
                 </div>
                 </el-main>
                 <el-footer style="text-align: right;">
-                    <el-button style="width: 200px;height: 50px;" color="#3c8dea" @click="confirmOrder">
+                    <el-button style="width: 200px;height: 50px;" color="#006ce4" @click="confirmOrder">
                         <el-text style="font-size: large;vertical-align: middle;color: white;" tag="b">完成预定</el-text>
                     </el-button>
                 </el-footer>
             </el-container>
         </el-container>
-        
+    </div>
+    <div>
+        <el-row style="background-color: aqua;">
+
+        </el-row>
+        <el-row>
+            
+        </el-row>
     </div>
 </template>
 
@@ -219,8 +227,16 @@ export default ({
         })
 
         const rules = ref({
-            phoneNumber: [{ required: true, message: "请输入手机号码", trigger: "blur" }],
-            userEmail: [{ required: true, message: "请输入您的邮箱地址", trigger: "blur" }],
+            phoneNumber: [{ 
+                required: true, 
+                pattern: /^1\d{10}$/,
+                message: "请输入有效的手机号码", 
+                trigger: "blur" }],
+            userEmail: [{ 
+                required: true,
+                pattern: /^([a-zA-Z0-9]+[_|_|\-|.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|_|.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,6}$/,
+                message: "请输入有效的邮箱地址", 
+                trigger: "blur" }],
         })
 
         const options = [

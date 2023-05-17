@@ -52,7 +52,6 @@
           <el-image
             style="width: 25px; height: 25px"
             :src="require('@/assets/menu_icon/language/China.png')"
-            :fit="fit"
           />
         </el-button>
       </el-tooltip>
@@ -67,7 +66,6 @@
             <el-image
               style="width: 25px; height: 25px"
               :src="require('@/assets/menu_icon/weiChat.svg')"
-              :fit="fit"
             />
           </el-button>
         </template>
@@ -99,7 +97,6 @@
           <el-image
             style="width: 25px; height: 25px"
             :src="require('@/assets/menu_icon/Question.svg')"
-            :fit="fit"
           />
         </el-button>
       </el-tooltip>
@@ -146,7 +143,6 @@
                 border-radius: 50%;
               "
               :src="require('@/assets/menu_icon/headImg.png')"
-              :fit="fit"
             />
             <el-text style="text-align: left; margin-left: 10px">
               <el-text tag="b" size="large" style="color: #fff"
@@ -167,7 +163,6 @@
               <el-image
                 style="width: 23px; vertical-align: middle"
                 :src="require('@/assets/menu_icon/' + item.icon)"
-                :fit="fit"
               />
               <el-text style="color: #000000; vertical-align: middle">{{
                 "&nbsp;&nbsp;" + item.name
@@ -258,7 +253,6 @@
               <el-image
                 style="width: 26px; height: 26px; vertical-align: middle"
                 :src="require('@/assets/cordMoney_true.svg')"
-                :fit="fit"
               />
             </el-col>
           </el-row> </el-card
@@ -470,7 +464,6 @@
           <el-image
             style="width: 20px; height: 20px; vertical-align: middle"
             :src="require('@/assets/menu_icon/language/UK.png')"
-            :fit="fit"
           />
           <el-text style="color: #212121; vertical-align: middle" size="large"
             >&nbsp;&nbsp;&nbsp;English(UK)</el-text
@@ -489,7 +482,6 @@
           <el-image
             style="width: 20px; height: 20px; vertical-align: middle"
             :src="require('@/assets/menu_icon/language/UK.png')"
-            :fit="fit"
           />
           <el-text style="color: #212121; vertical-align: middle" size="large"
             >&nbsp;&nbsp;&nbsp;English(UK)</el-text
@@ -507,7 +499,6 @@
               <el-image
                 style="width: 20px; height: 20px; vertical-align: middle"
                 :src="require('@/assets/menu_icon/language/China.png')"
-                :fit="fit"
               />
               <el-text
                 style="color: #3c8dea; vertical-align: middle"
@@ -519,7 +510,6 @@
               <el-image
                 style="width: 26px; height: 26px"
                 :src="require('@/assets/cordMoney_true.svg')"
-                :fit="fit"
               />
             </el-col>
           </el-row> </el-card
@@ -546,7 +536,7 @@
       style="width: 60%; margin-left: 20%"
       size="default"
     >
-      <el-form-item label="" prop="checked">
+      <el-form-item prop="checked">
         <el-checkbox v-model="logForm.checked">
           <el-text>我已阅读并同意</el-text>
           <el-link
@@ -604,12 +594,12 @@
       ref="myAddForm"
       :rules="addRules"
       label-position="top"
-      label-width="120px"
+      label-width="auto"
       :model="addForm"
       style="width: 60%; margin-left: 20%"
       size="default"
     >
-      <el-form-item label="" prop="checked">
+      <el-form-item prop="checked">
         <el-checkbox v-model="addForm.checked">
           <el-text>我已阅读并同意</el-text>
           <el-link
@@ -746,34 +736,32 @@ export default {
 
     //注册 表单验证
     const addRules = reactive({
-      checked: [
-        {
+      checked: [{
           type: "array",
           required: true,
+          massage: "请接受条款和条件，然后进行下一步操作",
           trigger: "change",
-          validater: checkChecked,
-        },
-      ],
-      tel: [{ required: true, trigger: "blur", validater: checkTele }],
-      pass: [{ required: true, trigger: "blur", validater: checkPassword }],
-      pass2: [{ required: true, trigger: "blur", validater: checkPassword2 }],
+        }],
+      tel: [{ required: true, massage: "请输入您的电话号码" ,trigger: "blur"}],
+      pass: [{ required: true, massage: "请输入密码", trigger: "blur"}],
+      pass2: [{ required: true, massage: "请再次输入密码", trigger: "blur"}],
     });
 
-    function checkPassword2(rule, value, callback) {
-      //二次验证密码
-      if (!value) {
-        callback("请再次输入密码");
-      }
-      if (addForm.pass) {
-        if (addForm.pass === value) {
-          callback();
-        } else {
-          callback("两次输入密码不一致，请重新输入");
-        }
-      } else {
-        callback("请先输入密码");
-      }
-    }
+    // function checkPassword2(rule, value, callback) {
+    //   //二次验证密码
+    //   if (!value) {
+    //     callback("请再次输入密码");
+    //   }
+    //   if (addForm.pass) {
+    //     if (addForm.pass === value) {
+    //       callback();
+    //     } else {
+    //       callback("两次输入密码不一致，请重新输入");
+    //     }
+    //   } else {
+    //     callback("请先输入密码");
+    //   }
+    // }
 
     function addFormConfirm() {
       myAddForm.value.validate((valid) => {
@@ -842,59 +830,59 @@ export default {
     });
 
     //log 表单验证
-    function checkChecked(rule, value, callback) {
-      console.log("value=" + value);
-      if (!value) {
-        callback(new Error("请接受条款和条件，然后进行下一步操作"));
-      } else {
-        if (logForm.checked) {
-          logForm.validateField("checked");
-        }
-        callback();
-      }
-    }
+    // function checkChecked(rule, value, callback) {
+    //   console.log("value=" + value);
+    //   if (!value) {
+    //     callback(new Error("请接受条款和条件，然后进行下一步操作"));
+    //   } else {
+    //     if (logForm.checked) {
+    //       logForm.validateField("checked");
+    //     }
+    //     callback();
+    //   }
+    // }
 
-    function checkTele(rule, value, callback) {
-      const reg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
-      if (!value) {
-        callback("请输入你的电话号码");
-        return;
-      }
-      if (!reg.test(value.replace(/(^\s*)|(\s*$)/g, ""))) {
-        callback("请输入有效的电话号码");
-        return;
-      }
-      callback();
-    }
+    // function checkTele(rule, value, callback) {
+    //   const reg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+    //   if (!value) {
+    //     callback("请输入你的电话号码");
+    //     return;
+    //   }
+    //   if (!reg.test(value.replace(/(^\s*)|(\s*$)/g, ""))) {
+    //     callback("请输入有效的电话号码");
+    //     return;
+    //   }
+    //   callback();
+    // }
 
-    function checkPassword(rule, value, callback) {
-      const reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,20}$/;
-      if (!value) {
-        callback("请输入你的密码");
-        return;
-      }
+    // function checkPassword(rule, value, callback) {
+    //   const reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,20}$/;
+    //   if (!value) {
+    //     callback("请输入你的密码");
+    //     return;
+    //   }
 
-      if (this.form.confirmPassword) {
-        this.$refs.Form.validateField(["confirmPassword"]);
-      }
-      if (!reg.test(value)) {
-        callback("请输入有效密码");
-        return;
-      }
-      callback();
-    }
+    //   if (this.form.confirmPassword) {
+    //     this.$refs.Form.validateField(["confirmPassword"]);
+    //   }
+    //   if (!reg.test(value)) {
+    //     callback("请输入有效密码");
+    //     return;
+    //   }
+    //   callback();
+    // }
 
     const logRules = ref({
       checked: [
         {
           type: "array",
           required: true,
+          massage: "请接受条款和条件，然后进行下一步操作",
           trigger: "change",
-          validater: checkChecked,
         },
       ],
-      tel: [{ required: true, trigger: "blur", validater: checkTele }],
-      pass: [{ required: true, trigger: "blur", validater: checkPassword }],
+      tel: [{ required: true, massage: "请输入您的电话号码", trigger: "blur"}],
+      pass: [{ required: true, massage: "请输入密码", trigger: "blur"}],
     });
 
     function FormConfirm() {
@@ -992,12 +980,8 @@ export default {
 
       /* 函数 */
       handleSelect,
-      checkPassword2,
       addFormCancle,
       addFormConfirm,
-      checkChecked,
-      checkTele,
-      checkPassword,
       FormCancle,
       FormConfirm,
       Register,
