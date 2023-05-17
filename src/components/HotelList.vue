@@ -6,19 +6,20 @@
           <el-card style="width: 100%; margin: 2% 2%" shadow="always">
             <el-form
               label-width="auto"
-              :model="formLabelAlign"
+              :model="formData"
               style="max-width: 100%"
             >
               <el-form-item label="地点" class="formItem">
                 <el-cascader
-                  v-model="formLabelAlign.loaction"
+                  v-model="formData.location"
                   :options="options"
                   placeholder="请选择地点"
                 />
               </el-form-item>
               <el-form-item label="TimeRange" class="formItem">
                 <el-date-picker
-                  v-model="formLabelAlign.selectTime"
+                  v-model="formData.selectTime"
+                  value-format="YYYY-MM-DD"
                   type="daterange"
                   range-separator="To"
                   start-placeholder="Start"
@@ -27,22 +28,28 @@
                 />
               </el-form-item>
               <el-form-item label="RoomNumber" class="formItem">
-                <el-input-number v-model="formLabelAlign.roomNumber" :min="1" />
+                <el-input-number v-model="formData.roomNumber" :min="1" />
               </el-form-item>
               <div class="SearchButtonBox">
-                <el-button style="margin-left: 70%">🔍搜索</el-button>
+                <el-button style="margin-left: 70%" @click="SearchHotel"
+                  >🔍搜索</el-button
+                >
               </div>
             </el-form>
           </el-card>
         </el-affix>
       </el-col>
       <el-col :span="16">
-        <div v-for="o in 10" :key="o" class="HotelCardOutterBox">
+        <div
+          v-for="o in showList.data.length"
+          :key="o"
+          class="HotelCardOutterBox"
+        >
           <el-card class="HotelCardBox">
             <el-row :gutter="20" style="height: 100%; width: 100%">
               <el-col :span="8">
                 <el-image
-                  src="https://youimg1.c-ctrip.com/target/100o0x000000l33nt6FCA.jpg"
+                  :src="showList.data[o - 1].figURL"
                   :fit="imgFitContain"
                   style="height: 100%; width: 100%"
                 >
@@ -50,20 +57,26 @@
               </el-col>
               <el-col :span="16">
                 <el-row style="width: 100%">
-                  <p class="HotelName">东南大学九龙湖宾馆</p>
-                  <p>7.9分</p>
+                  <p class="HotelName">{{ showList.data[o - 1].hotelName }}</p>
+                  <p>{{ showList.data[o - 1].score }}分</p>
                 </el-row>
                 <el-row style="width: 100%">
                   <el-text class="CommentExample" style="width: 60%" truncated
-                    >"真的很Nice，住它！"</el-text
+                    >"{{ showList.data[o - 1].comment }}"</el-text
                   >
-                  <p>9988条用户评论</p>
+                  <p>{{ showList.data[o - 1].commentNumber }}条用户评论</p>
                 </el-row>
                 <el-row style="width: 100%">
-                  <el-text class="HotelPrice">2800元</el-text>
+                  <el-text class="HotelPrice"
+                    >{{ showList.data[o - 1].price }}元</el-text
+                  >
                 </el-row>
                 <el-row style="width: 100%">
-                  <el-button style="margin-left: 80%">立即预定！</el-button>
+                  <el-button
+                    style="margin-left: 80%"
+                    @click="BookHotel(showList.data[o - 1].hotelId)"
+                    >立即预定！</el-button
+                  >
                 </el-row>
               </el-col>
             </el-row>
@@ -95,288 +108,202 @@
 
 <script>
 import { reactive, ref } from "vue";
+import router from "@/router"; // 引入userRouter
+import http from "@/plugins/axiosInstance";
+import store from "@/store";
 export default {
   name: "HotelList",
   setup() {
-    const formLabelAlign = reactive({
-      location: "",
-      selectTime: "",
+    const formData = reactive({
+      location: [],
+      selectTime: [],
       roomNumber: 1,
     });
     const imgFitContain = "contain";
     const options = [
       {
-        value: "guide",
-        label: "Guide",
+        value: "中国",
+        label: "中国",
         children: [
           {
-            value: "disciplines",
-            label: "Disciplines",
+            value: "江苏",
+            label: "江苏",
             children: [
               {
-                value: "consistency",
-                label: "Consistency",
-              },
-              {
-                value: "feedback",
-                label: "Feedback",
-              },
-              {
-                value: "efficiency",
-                label: "Efficiency",
-              },
-              {
-                value: "controllability",
-                label: "Controllability",
+                value: "南京",
+                label: "南京",
               },
             ],
           },
           {
-            value: "navigation",
-            label: "Navigation",
-            children: [
-              {
-                value: "side nav",
-                label: "Side Navigation",
-              },
-              {
-                value: "top nav",
-                label: "Top Navigation",
-              },
-            ],
+            value: "重庆",
+            label: "重庆",
+          },
+          {
+            value: "上海",
+            label: "上海",
           },
         ],
       },
       {
-        value: "component",
-        label: "Component",
+        value: "美国",
+        label: "美国",
         children: [
           {
-            value: "basic",
-            label: "Basic",
+            value: "纽约州",
+            label: "纽约州",
             children: [
               {
-                value: "layout",
-                label: "Layout",
-              },
-              {
-                value: "color",
-                label: "Color",
-              },
-              {
-                value: "typography",
-                label: "Typography",
-              },
-              {
-                value: "icon",
-                label: "Icon",
-              },
-              {
-                value: "button",
-                label: "Button",
+                value: "纽约",
+                label: "纽约",
               },
             ],
           },
           {
-            value: "form",
-            label: "Form",
+            value: "加利福尼亚",
+            label: "加利福尼亚",
             children: [
               {
-                value: "radio",
-                label: "Radio",
-              },
-              {
-                value: "checkbox",
-                label: "Checkbox",
-              },
-              {
-                value: "input",
-                label: "Input",
-              },
-              {
-                value: "input-number",
-                label: "InputNumber",
-              },
-              {
-                value: "select",
-                label: "Select",
-              },
-              {
-                value: "cascader",
-                label: "Cascader",
-              },
-              {
-                value: "switch",
-                label: "Switch",
-              },
-              {
-                value: "slider",
-                label: "Slider",
-              },
-              {
-                value: "time-picker",
-                label: "TimePicker",
-              },
-              {
-                value: "date-picker",
-                label: "DatePicker",
-              },
-              {
-                value: "datetime-picker",
-                label: "DateTimePicker",
-              },
-              {
-                value: "upload",
-                label: "Upload",
-              },
-              {
-                value: "rate",
-                label: "Rate",
-              },
-              {
-                value: "form",
-                label: "Form",
+                value: "硅谷",
+                label: "硅谷",
               },
             ],
-          },
-          {
-            value: "data",
-            label: "Data",
-            children: [
-              {
-                value: "table",
-                label: "Table",
-              },
-              {
-                value: "tag",
-                label: "Tag",
-              },
-              {
-                value: "progress",
-                label: "Progress",
-              },
-              {
-                value: "tree",
-                label: "Tree",
-              },
-              {
-                value: "pagination",
-                label: "Pagination",
-              },
-              {
-                value: "badge",
-                label: "Badge",
-              },
-            ],
-          },
-          {
-            value: "notice",
-            label: "Notice",
-            children: [
-              {
-                value: "alert",
-                label: "Alert",
-              },
-              {
-                value: "loading",
-                label: "Loading",
-              },
-              {
-                value: "message",
-                label: "Message",
-              },
-              {
-                value: "message-box",
-                label: "MessageBox",
-              },
-              {
-                value: "notification",
-                label: "Notification",
-              },
-            ],
-          },
-          {
-            value: "navigation",
-            label: "Navigation",
-            children: [
-              {
-                value: "menu",
-                label: "Menu",
-              },
-              {
-                value: "tabs",
-                label: "Tabs",
-              },
-              {
-                value: "breadcrumb",
-                label: "Breadcrumb",
-              },
-              {
-                value: "dropdown",
-                label: "Dropdown",
-              },
-              {
-                value: "steps",
-                label: "Steps",
-              },
-            ],
-          },
-          {
-            value: "others",
-            label: "Others",
-            children: [
-              {
-                value: "dialog",
-                label: "Dialog",
-              },
-              {
-                value: "tooltip",
-                label: "Tooltip",
-              },
-              {
-                value: "popover",
-                label: "Popover",
-              },
-              {
-                value: "card",
-                label: "Card",
-              },
-              {
-                value: "carousel",
-                label: "Carousel",
-              },
-              {
-                value: "collapse",
-                label: "Collapse",
-              },
-            ],
-          },
-        ],
-      },
-      {
-        value: "resource",
-        label: "Resource",
-        children: [
-          {
-            value: "axure",
-            label: "Axure Components",
-          },
-          {
-            value: "sketch",
-            label: "Sketch Templates",
-          },
-          {
-            value: "docs",
-            label: "Design Documentation",
           },
         ],
       },
     ];
 
+    const showList = reactive({
+      data: [
+        {
+          hotelId: 1,
+          hotelName: "东南大学九龙湖宾馆",
+          score: 22,
+          briefIntro: "很好的酒店",
+          comment: "我是评论案例",
+          commentNumber: 9999,
+          price: 999.99,
+          figURL:
+            "https://www.topbots.com/wp-content/uploads/2017/04/booking_800x350_web.png",
+        },
+      ],
+    });
+    //根据跳转到这个界面的类型进行接口的渲染
+    var send_location = "";
+    if (store.state.searchHotelListType === "fullSearch") {
+      var len = store.state.searchLocation.length;
+      for (var i = 0; i < len - 1; i++) {
+        send_location += store.state.searchLocation[i];
+        send_location += "-";
+      }
+      send_location +=
+        store.state.searchLocation[store.state.searchLocation.length - 1];
+      http
+        .post(store.state.serverAddr + "/fullSearch", {
+          location: send_location,
+          selectTime: {
+            checkinTime: store.state.searchCheckinTime,
+            checkoutTime: store.state.searchCheckoutTime,
+          },
+          roomCount: store.state.searchPeopleNumber,
+        })
+        .then(
+          (res) => {
+            showList.data = res.data.hotelList;
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
+    } else if (store.state.searchHotelListType === "countrySearch") {
+      http
+        .post(store.state.serverAddr + "/fullSearch", {
+          location: store.state.searchLocation[0],
+          selectTime: {
+            checkinTime: "0000-00-00",
+            checkoutTime: "9999-12-08",
+          },
+          roomCount: 1,
+        })
+        .then(
+          (res) => {
+            showList.data = res.data.hotelList;
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
+    } else if (store.state.searchHotelListType === "typeSearch") {
+      http
+        .post(store.state.serverAddr + "/typeSearch", {
+          hotelType: store.state.searchType,
+        })
+        .then(
+          (res) => {
+            showList.data = res.data.hotelList;
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
+    } else {
+      /* do nothing*/
+    }
+
+    function SearchHotel() {
+      var send_location = "";
+      var send_checkinTime = "";
+      var send_checkoutTime = "";
+      var send_roomCount = 0;
+      if (formData.location === []) send_location = "中国";
+      else {
+        for (var i = 0; i < formData.location.length - 1; i++) {
+          send_location += formData.location[i];
+          send_location += "-";
+        }
+        send_location += formData.location[formData.location.length - 1];
+      }
+
+      if (formData.selectTime[0] === undefined) send_checkinTime = "0000-00-00";
+      else send_checkinTime = formData.selectTime[0];
+
+      if (formData.selectTime[1] === undefined)
+        send_checkoutTime = "9999-01-01";
+      else send_checkoutTime = formData.selectTime[1];
+
+      if (formData.roomNumber === undefined) send_roomCount = 1;
+      else send_roomCount = formData.roomNumber;
+
+      http
+        .post(store.state.serverAddr + "/fullSearch", {
+          location: send_location,
+          selectTime: {
+            checkinTime: send_checkinTime,
+            checkoutTime: send_checkoutTime,
+          },
+          roomCount: send_roomCount,
+        })
+        .then(
+          (res) => {
+            showList.data = res.data.hotelList;
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
+    }
+    function BookHotel(hotelId) {
+      store.state.searchHotelId = hotelId;
+      router.push("HotelDetail");
+    }
     return {
-      formLabelAlign,
+      formData,
       options,
       imgFitContain,
+      showList,
+
+      SearchHotel,
+      BookHotel,
     };
   },
 };

@@ -6,7 +6,16 @@ import { createStore } from 'vuex'
 export default createStore({
     state: {
         num: 111,
-        serverAddr: "https://581270ee-1944-469d-ad92-aee670aeb511.mock.pstmn.io"
+        serverAddr: "https://581270ee-1944-469d-ad92-aee670aeb511.mock.pstmn.io",
+
+        searchHotelListType:"",
+        searchLocation: [],
+        searchCheckinTime: "",
+        searchCheckoutTime: "",
+        searchPeopleNumber: 0,
+        searchType: "",
+
+        searchHotelId: 0,
     },
     mutations: {},
     actions: {},
