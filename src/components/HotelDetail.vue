@@ -66,6 +66,7 @@
       <el-table-column prop="roomName" label="房间类型" width="180" />
       <el-table-column prop="roomBriefIntro" label="简介" width="180" />
       <el-table-column prop="roomDetail" label="详细信息" />
+      <el-table-column prop="roomPrice" label="价格" />
       <el-table-column label="预定" width="200">
         <template #default="scope">
           <el-input-number
@@ -216,6 +217,7 @@ export default {
           roomName: "标间",
           roomBriefIntro: "我是标间",
           roomDetail: ["提前付费", "无法退款。"],
+          roomPrice: 900,
           availableMax: 5,
         },
         {
@@ -223,6 +225,7 @@ export default {
           roomName: "双人间",
           roomBriefIntro: "我是双人间",
           roomDetail: ["提前付费", "无法退款。"],
+          roomPrice: 900,
           availableMax: 10,
         },
         {
@@ -230,6 +233,7 @@ export default {
           roomName: "大床间",
           roomBriefIntro: "我是大床房",
           roomDetail: ["提前付费", "无法退款。"],
+          roomPrice: 900,
           availableMax: 15,
         },
       ],
@@ -238,15 +242,21 @@ export default {
       data: [
         {
           roomId: 100,
+          roomName: "",
           roomNumber: 0,
+          roomPrice: 0,
         },
         {
           roomId: 100,
+          roomName: "",
           roomNumber: 0,
+          roomPrice: 0,
         },
         {
           roomId: 100,
+          roomName: "",
           roomNumber: 0,
+          roomPrice: 0,
         },
       ],
     });
@@ -270,6 +280,8 @@ export default {
           for (var i = 0; i < res.data.emptyRoomInfo.length; i++) {
             bookRoomCount.data.push({
               roomId: res.data.emptyRoomInfo[i].roomId,
+              roomName: res.data.emptyRoomInfo[i].roomName,
+              roomPrice: res.data.emptyRoomInfo[i].roomPrice,
               roomNumber: 0,
             });
           }
@@ -285,7 +297,14 @@ export default {
 
     function BookRoomNow() {
       /*****************************************************/
+      store.state.totalPrice = 0;
+      store.state.CurrentHotelName = detailInfo.data.hotelName;
+      store.state.CurrentHotelLocation = detailInfo.data.hotelLocation;
+      store.state.CurrentHotelFigURL = detailInfo.data.figURLs[0];
+      store.state.bookRoomInfo = bookRoomCount.data;
       //根据bookRoomCount中的数据，进行提交，跳转到订单页面
+      for (var i = 0; i < bookRoomCount.data.length; i++)
+        store.state.totalPrice += bookRoomCount.data[i].roomPrice;
 
       router.push("/HotelOrder");
     }

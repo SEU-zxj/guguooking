@@ -19,6 +19,18 @@ export default createStore({
         isLogin: false,
 
         searchHotelId: 0,
+        totalPrice: 1.0,
+        CurrentHotelName: "",
+        CurrentHotelLocation: "",
+        CurrentHotelFigURL: "",
+
+        bookRoomInfo: [],
+        //{
+        //   roomId: 100,
+        //   roomName: "",
+        //   roomNumber: 0,
+        //   roomPrice: 0,
+        // },
     },
     mutations: {},
     actions: {},
