@@ -203,13 +203,15 @@
                           bottom: 0;
                           margin: auto;
                         "
+                        :disabled="order.commentWrited"
+                        @click="WriteComment(order.hotelId)"
                       >
                         <el-image
                           style="width: 25px; height: 25px"
                           :src="require('@/assets/menu_icon/my_icon/order.svg')"
                         />
                         <el-text style="font-size: medium">
-                          &nbsp;&nbsp;查看行程和订单详情</el-text
+                          &nbsp;&nbsp;撰写评论</el-text
                         >
                       </el-button></el-col
                     >
@@ -218,6 +220,17 @@
               </el-row>
             </el-card>
           </div>
+          <el-dialog v-model="dialogCommentVisible" title="撰写评论">
+            <span class="demonstration">Default</span>
+            <el-rate v-model="rateValue" />
+            <el-input
+              v-model="commentText"
+              :rows="2"
+              type="textarea"
+              placeholder="请在这里输入您的评论"
+            />
+            <el-button @click="SubmitComment">提交评论</el-button>
+          </el-dialog>
         </div>
       </el-main>
 
@@ -374,15 +387,61 @@ export default {
       return sumRoomNum;
     };
 
+    var currentHotelId = ref(0);
+    var dialogCommentVisible = ref(false);
+    var rateValue = ref(0);
+    var commentText = ref("");
+    function WriteComment(hotelId) {
+      dialogCommentVisible.value = true;
+      currentHotelId = hotelId;
+    }
+    function SubmitComment() {
+      dialogCommentVisible.value = false;
+      http
+        .post(store.state.serverAddr + "/commentSubmit", {
+          hotelId: currentHotelId.value,
+          phoneNumber: store.state.userPhoneNumber,
+          userScore: rateValue.value,
+          commentText: commentText.value,
+        })
+        .then(
+          (res) => {
+            if (res.data.resultComment) {
+              ElMessage({
+                message: "撰写评论成功",
+                type: "success",
+              });
+            } else {
+              ElMessage({
+                message: "出错了",
+                type: "warning",
+              });
+            }
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
+
+      rateValue.value = 0;
+      commentText.value = "";
+    }
+
     return {
       numOfOrder,
       orders,
+      currentHotelId,
+      dialogCommentVisible,
+      rateValue,
+      commentText,
 
       getOrders,
       removeOrder,
       time2time,
       dateDifference,
       sumRoomNum,
+      WriteComment,
+      SubmitComment,
     };
   },
   mounted() {
