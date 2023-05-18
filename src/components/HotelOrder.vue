@@ -259,8 +259,8 @@ export default ({
         const order = ref({
             hotelName: store.state.CurrentHotelName, hotelPostion: store.state.CurrentHotelLocation,
             figURL: store.state.CurrentHotelFigURL,
-            checkinTime: "2023年6月22日周四",
-            checkoutTime: "2023年6月25日周六",
+            checkinTime: store.state.CurrentSelectTime[0],
+            checkoutTime: store.state.CurrentSelectTime[1],
             totalDays: "2",
             Rooms: store.state.bookRoomInfo,
             totalPrice: store.state.totalPrice,
