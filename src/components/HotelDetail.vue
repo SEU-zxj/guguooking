@@ -302,6 +302,7 @@ export default {
       store.state.CurrentHotelLocation = detailInfo.data.hotelLocation;
       store.state.CurrentHotelFigURL = detailInfo.data.figURLs[0];
       store.state.bookRoomInfo = bookRoomCount.data;
+      store.state.CurrentSelectTime = searchTime.value;
       //根据bookRoomCount中的数据，进行提交，跳转到订单页面
       for (var i = 0; i < bookRoomCount.data.length; i++)
         store.state.totalPrice += bookRoomCount.data[i].roomPrice;
