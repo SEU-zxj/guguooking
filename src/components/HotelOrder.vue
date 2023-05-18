@@ -261,7 +261,7 @@ export default ({
             figURL: store.state.CurrentHotelFigURL,
             checkinTime: store.state.CurrentSelectTime[0],
             checkoutTime: store.state.CurrentSelectTime[1],
-            totalDays: "2",
+            totalDays: dateDifference(store.state.CurrentSelectTime[0], store.state.CurrentSelectTime[1]),
             Rooms: store.state.bookRoomInfo,
             totalPrice: store.state.totalPrice,
         })
