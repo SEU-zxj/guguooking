@@ -189,21 +189,58 @@
             </el-container>
         </el-container>
     </div>
-    <div>
-        <el-row style="background-color: aqua;">
 
+    <div class="BottomInfoBox">
+        <div class="BottomInfoBox-sub1">
+            <div class="bottomBox-row">
+            <el-row>&nbsp;</el-row>
+            <el-row :gutter="1" style="margin-top: -5px;">
+                <el-col :span="3.5" style="border-radius: 0%;border-right: solid 1.5px  grey;"><el-text style="color: #006ce4;" tag="b">关于Guguooking.com&nbsp;</el-text></el-col>
+                <el-col :span="1.8" style="border-radius: 0%;border-right: solid 1.5px  grey;"><el-text style="color: #006ce4;" tag="b">&nbsp;客服帮助&nbsp;</el-text></el-col>
+                <el-col :span="1.9" style="border-radius: 0%;border-right: solid 1.5px  grey;"><el-text style="color: #006ce4;" tag="b">&nbsp;条款与条件&nbsp;</el-text></el-col>
+                <el-col :span="2.9" style="border-radius: 0%;border-right: solid 1.5px  grey;"><el-text style="color: #006ce4;" tag="b">&nbsp;隐私和Cookie声明&nbsp;</el-text></el-col>
+            </el-row>
+            </div>
+        </div>
+    </div>
+    <div class="BottomInfoBox-sub2">
+        <div class="bottomBox-row">
+        <el-row :gutter="0" style="margin-top: 20px;">
+            <el-col :span="1">
+                <el-image style="width: 45px;" :src="require('@/assets/phoneFilled_yellow.svg')"/>
+            </el-col>
+            <el-col :span="8" style="padding-left: 25px;">
+                <el-text style="color: #000000;font-size: x-large;" tag="b">24小时客服助您安心出行</el-text><br>
+                <p style="color: #91979e;">订单有问题？我们来帮您！</p>
+            </el-col>
+            <el-col :span="5" style="padding-top: 16px;">
+                <el-text><el-text size="large">中文客服热线</el-text><br><el-text size="large" style="color: #127ce8;">点击了解更多客服帮助</el-text></el-text>
+            </el-col>
+            <el-col :span="5" style="padding-top: 16px;">
+                <el-text><el-text size="large">常见问题</el-text><br><el-text size="large">去</el-text><el-text size="large" style="color: #127ce8;">帮助中心</el-text><el-text size="large">看看</el-text></el-text>
+            </el-col>
         </el-row>
-        <el-row>
+        </div>
+    </div>
+    <div class="BottomInfoBox-sub3">
+         <div class="bottomBox-row">
+            <el-row style="height: 30px;vertical-align: bottom;">
+                <p style="font-size: small;">版权 © 2023 Guguooking.com. 版权所有</p>
+            </el-row>
             
-        </el-row>
+         </div>
     </div>
 </template>
 
 
 
 <script>
-import { ref, reactive } from 'vue'
+import { ref, reactive } from 'vue';
+import { ElMessage } from "element-plus";
 import { InfoFilled, Coin, Money } from '@element-plus/icons-vue';
+import http from "@/plugins/axiosInstance";
+import store from "@/store/index";
+import router from "@/router"
 
 export default ({
     setup() {
@@ -220,7 +257,7 @@ export default ({
             totalPrice: "1,340",
         })
         const orderForm = reactive({
-            phoneNumber: "",
+            phoneNumber: store.userPhoneNumber,
             userEmail: "",
             arriveTime: "",
             otherNeed: "",
@@ -272,16 +309,58 @@ export default ({
                 if (valid) {
                     console.log("通过");
                     //触发成功验证表单，调用接口
-                    console.log("电话号码："+orderForm.phoneNumber)
-                    console.log("邮箱地址：" + orderForm.userEmail)
-                    console.log("到店时间：" + orderForm.arriveTime)
-                    console.log("其他要求：" + orderForm.otherNeed)
+                    http.post(
+                        store.state.serverAddr + "/orderSubmit",
+                        {
+                            phoneNumber: orderForm.phoneNumber,
+                            userEmail: orderForm.userEmail,
+                            arriveTime: orderForm.arriveTime,
+                            otherNeed: orderForm.otherNeed,
+                        }
+                    ).then(
+                        (res) => {
+                            console.log(res)
+                            if(res.data.resultOrder){
+                                console.log("电话号码：" + orderForm.phoneNumber)
+                                console.log("邮箱地址：" + orderForm.userEmail)
+                                console.log("到店时间：" + orderForm.arriveTime)
+                                console.log("其他要求：" + orderForm.otherNeed)
+
+                                ElMessage({
+                                    showClose: true,
+                                    type: "success",
+                                    message: "行程预定成功！",
+                                });
+
+                                /* 跳转到查看订单页面 */
+                                router.push("/CheckOrder")
+                            }else{
+                                ElMessage({
+                                    showClose: true,
+                                    type: "error",
+                                    message: "行程预定失败",
+                                });
+                            }
+                        },
+                        (err) => {
+                            console.log(err)
+                            ElMessage({
+                                showClose: true,
+                                message: "出错了，请联系管理员处理（提交订单）",
+                                type: "error",
+                            });
+                        }
+                    )
+
                 } else {
                     console.log("未通过");
+                    ElMessage({
+                        showClose: true,
+                        message: "请先将个人信息填写完整哦",
+                        type: "warning",
+                    });
                 }
-            });
-            //接口
-            
+            });            
         }
         return{
             ruleForms, rules,
@@ -303,6 +382,7 @@ export default ({
   margin-left: 11.5%;
   margin-right: 11.5%;
   margin-top: 20px;
+  margin-bottom: 50px;
 }
 .aside-card {
     width: 100%;
@@ -315,5 +395,24 @@ export default ({
     margin-left: 0%;
     margin-right: 0%;
     margin-bottom: 10px;
+}
+.BottomInfoBox {
+  width: 100%;
+}
+.BottomInfoBox-sub1{
+    height: 6vh;
+    background-color:#f5f5f5;
+    text-align: center;
+}
+.BottomInfoBox-sub2{
+    height: 10vh;
+}
+.BottomInfoBox-sub3{
+    height: 6vh;
+    background-color:#f5f5f5;
+}
+.bottomBox-row {
+    margin-left: 11.5%;
+    margin-right: 11.5%;
 }
 </style>

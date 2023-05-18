@@ -14,3 +14,16 @@ app.config.globalProperties.$axios=axios;
 app.config.globalProperties.$store=store;
 app.use(store)
 app.mount('#app')
+
+// axios.interceptors.request.use(function(config){
+//     let token = window.localStorage.getItem('userToken');
+//     token = eval('(' + token + ')');
+//     // console.log(token)
+//     if (token){
+//         config.headers.token = token;    //将token放到请求头发送给服务器
+//     }
+
+//     return config;
+// }, function (error) {
+//     return Promise.reject(error);
+// });
