@@ -33,7 +33,7 @@
           color="#000000"
           @click="dialogFormVisible_money = true"
         >
-          <el-text tag="b" style="color: #fff;font-size: large;">CNY</el-text>
+          <el-text tag="b" style="color: #fff; font-size: large">CNY</el-text>
         </el-button>
       </el-tooltip>
 
@@ -662,8 +662,7 @@ import { ElMessage } from "element-plus";
 import http from "../src/plugins/axiosInstance";
 // import { useStore } from "vuex"; //1.从vuex中引入useStore
 import store from "@/store/index";
-import router from "@/router"
-
+import router from "@/router";
 
 export default {
   setup() {
@@ -725,7 +724,7 @@ export default {
           //清除本地记录的token
           // window.localStorage.setItem('userToken', '')
           //返回主页面
-          router.push("/Main")
+          router.push("/Main");
           break;
         default:
           break;
@@ -743,15 +742,17 @@ export default {
 
     //注册 表单验证
     const addRules = reactive({
-      checked: [{
+      checked: [
+        {
           type: "array",
           required: true,
           massage: "请接受条款和条件，然后进行下一步操作",
           trigger: "change",
-        }],
-      tel: [{ required: true, massage: "请输入您的电话号码" ,trigger: "blur"}],
-      pass: [{ required: true, massage: "请输入密码", trigger: "blur"}],
-      pass2: [{ required: true, massage: "请再次输入密码", trigger: "blur"}],
+        },
+      ],
+      tel: [{ required: true, massage: "请输入您的电话号码", trigger: "blur" }],
+      pass: [{ required: true, massage: "请输入密码", trigger: "blur" }],
+      pass2: [{ required: true, massage: "请再次输入密码", trigger: "blur" }],
     });
 
     // function checkPassword2(rule, value, callback) {
@@ -792,12 +793,12 @@ export default {
                     message: "注册成功！",
                     type: "success",
                   });
-                  console.log("注册成功！用户电话=" + store.userPhoneNumber)
+                  console.log("注册成功！用户电话=" + store.userPhoneNumber);
 
                   const form = unref(myAddForm);
                   form.resetFields();
 
-                  dialogFormVisible_log.value = true;//显示重新登录
+                  dialogFormVisible_log.value = true; //显示重新登录
                 } else {
                   ElMessage({
                     showClose: true,
@@ -809,7 +810,7 @@ export default {
                 form.resetFields();
               },
               (err) => {
-                console.log(err)
+                console.log(err);
                 ElMessage({
                   showClose: true,
                   message: "出错了，请联系管理员处理（注册）",
@@ -892,62 +893,67 @@ export default {
           trigger: "change",
         },
       ],
-      tel: [{ required: true, massage: "请输入您的电话号码", trigger: "blur"}],
-      pass: [{ required: true, massage: "请输入密码", trigger: "blur"}],
+      tel: [{ required: true, massage: "请输入您的电话号码", trigger: "blur" }],
+      pass: [{ required: true, massage: "请输入密码", trigger: "blur" }],
     });
 
     function FormConfirm() {
       myLogForm.value.validate((valid) => {
         if (valid) {
           console.log("log表单验证通过-all");
-          console.log(store.state.serverAddr + "/login?phone=" + logForm.tel + "&password=" + logForm.pass);
+          console.log(
+            store.state.serverAddr +
+              "/login?phone=" +
+              logForm.tel +
+              "&password=" +
+              logForm.pass
+          );
           // 接口
-          http.post(store.state.serverAddr + "/login",
-          {
-            phoneNumber: logForm.tel,
-            password: logForm.pass,
-          })
-          // http.get(store.state.serverAddr + "/login?phone=" + logForm.tel + "&password=" + logForm.pass )
+          http
+            .post(store.state.serverAddr + "/login", {
+              phoneNumber: logForm.tel,
+              password: logForm.pass,
+            })
+            // http.get(store.state.serverAddr + "/login?phone=" + logForm.tel + "&password=" + logForm.pass )
             .then(
-            (res) => {
-              console.log(res)
-              if(res.data.code == 0){
-                
-                dialogFormVisible_log.value = false;
+              (res) => {
+                console.log(res);
+                if (res.data.result) {
+                  dialogFormVisible_log.value = false;
 
-                store.userPhoneNumber = logForm.tel
-                console.log("成功登录！用户电话=" + store.userPhoneNumber)
-                //记录token
-                // window.localStorage.setItem('userToken', res.data.data.token)
-                //记录登录状态
-                store.state.isLogin = true;
+                  store.userPhoneNumber = logForm.tel;
+                  console.log("成功登录！用户电话=" + store.userPhoneNumber);
+                  //记录token
+                  // window.localStorage.setItem('userToken', res.data.data.token)
+                  //记录登录状态
+                  store.state.isLogin = true;
 
-                const form = unref(myLogForm);
-                form.resetFields();
-                setTimeout(() => {//提示登录成功并0.5s后返回先前界面
+                  const form = unref(myLogForm);
+                  form.resetFields();
+                  setTimeout(() => {
+                    //提示登录成功并0.5s后返回先前界面
                     router.go(-1);
                   }, 500);
-              }else{
+                } else {
+                  ElMessage({
+                    showClose: true,
+                    message: "您还没有注册账户，请先注册",
+                  });
+                  dialogFormVisible_log.value = false; //消失 登录对话框
+                  dialogFormVisible_add.value = true; //显示 注册对话框
+                }
+                const form = unref(myLogForm);
+                form.resetFields();
+              },
+              (err) => {
+                console.log(err);
                 ElMessage({
                   showClose: true,
-                  message: "您还没有注册账户，请先注册",
+                  message: "出错了，请联系管理员处理（登录）",
+                  type: "error",
                 });
-                dialogFormVisible_log.value = false;//消失 登录对话框
-                dialogFormVisible_add.value = true;//显示 注册对话框
               }
-              const form = unref(myLogForm);
-              form.resetFields();
-            },
-            (err) => {
-              console.log(err)
-              ElMessage({
-                showClose: true,
-                message: "出错了，请联系管理员处理（登录）",
-                type: "error",
-              });
-            }
-          )
-
+            );
         } else {
           console.log("log表单验证未通过");
         }
@@ -993,12 +999,12 @@ export default {
     // }
 
     /* 跳转函数 */
-    const app2Main = () =>{
-      router.push("/Main")
-    }
+    const app2Main = () => {
+      router.push("/Main");
+    };
     const app2CheckOrder = () => {
-      router.push("/CheckOrder")
-    }
+      router.push("/CheckOrder");
+    };
     return {
       /* 变量 */
       activeIndex,
@@ -1033,7 +1039,8 @@ export default {
       // Register,
       Login,
       /* 跳转 */
-      app2Main, app2CheckOrder,
+      app2Main,
+      app2CheckOrder,
     };
   },
 };

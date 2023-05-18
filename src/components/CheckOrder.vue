@@ -22,9 +22,9 @@
               <el-card shadow="hover">
                 <el-row :gutter="0">
                   <el-col :span="12">
-                    <!-- <el-text style="color: #000000;font-size: large;" tag="b">{{ order.hotelName }}</el-text><br>
-                    <el-text size="large" >{{ order.hotelLocation }}</el-text> -->
-                    <el-text style="color: #000000;font-size: large;" tag="b">{{ order.hotelId }}</el-text>
+                    <el-text style="color: #000000;font-size: large;" tag="b">{{ order.hotelName }}</el-text><br>
+                    <el-text size="large" >{{ order.hotelLocation }}</el-text>
+                    <!-- <el-text style="color: #000000;font-size: large;" tag="b">{{ order.hotelId }}</el-text> -->
                   </el-col>
                   <el-col :span="3" :offset="21">
                     <el-tooltip
@@ -43,7 +43,7 @@
                 <el-row :gutter="20" style="margin-bottom: -5px;">
                   <el-col :span="6">
                     <el-image 
-                      src="https://youimg1.c-ctrip.com/target/100o0x000000l33nt6FCA.jpg"
+                      :src="order.figURL"
                       :fit="contain"
                       style="height: 160px; width: 100%;" 
                       class="orderImg" /><!-- :src="order.figURL" -->
@@ -56,10 +56,10 @@
                       <el-col :span="5" style="border-right: solid 1px var(--el-border-color);border-radius: 0%;">
                         <el-text>入住时间</el-text><br>
                         <el-text style="color: #000000;font-size: xx-large;" tag="b">
-                          {{ time2time(order.startTime).getDate().toString() }}
+                          {{ time2time(order.checkinTime).getDate().toString() }}
                         </el-text><br>
                         <el-text tag="b" style="color: #000000;font-size: large;">
-                          {{ (time2time(order.startTime).getMonth() + 1).toString() + "月" }}
+                          {{ (time2time(order.checkinTime).getMonth() + 1).toString() + "月" }}
                         </el-text><br>
                         <el-image style="width: 16px;vertical-align: middle;" :src="require('@/assets/order/time.svg')"/>
                         <el-text>14:00至18:00</el-text>
@@ -67,10 +67,10 @@
                       <el-col :span="5" style="border-right: solid 1px var(--el-border-color);border-radius: 0%;">
                         <el-text>退房时间</el-text><br>
                         <el-text style="color: #000000;font-size: xx-large;" tag="b">
-                          {{ time2time(order.endTime).getDate().toString() }}
+                          {{ time2time(order.checkoutTime).getDate().toString() }}
                         </el-text><br>
                         <el-text tag="b" style="color: #000000;font-size: large;">
-                          {{ (time2time(order.endTime).getMonth() + 1).toString() + "月" }}
+                          {{ (time2time(order.checkoutTime).getMonth() + 1).toString() + "月" }}
                         </el-text><br>
                         <el-image style="width: 16px;vertical-align: middle;" :src="require('@/assets/order/time.svg')"/>
                         <el-text>07:00至11:00</el-text>
@@ -80,16 +80,16 @@
                           <el-col :span="11">
                           <el-text>人数</el-text><br>
                           <el-text style="color: #000000;font-size: xx-large;" tag="b">
-                            <!-- {{ sumRoomNum(order.selectedRoom) }} -->
-                            {{ order.number }}
+                            {{ sumRoomNum(order.selectedRoom) }}
+                            <!-- {{ order.number }} -->
                           </el-text>
                         </el-col>
                         <el-col :span="2"><br><el-text style="font-size: xx-large;">/</el-text></el-col>
                         <el-col :span="11">
                           <el-text>入住夜数</el-text><br>
                           <el-text style="color: #000000;font-size: xx-large;" tag="b">
-                            <!-- {{ dateDifference(order.checkinTime, order.checkoutTime) }} -->
-                            {{ dateDifference(order.startTime, order.endTime) }}
+                            {{ dateDifference(order.checkinTime, order.checkoutTime) }}
+                            <!-- {{ dateDifference(order.startTime, order.endTime) }} -->
                           </el-text>
                         </el-col>
                         </el-row>
@@ -97,8 +97,8 @@
                       <el-col :span="8">
                         <el-text>总价(含所有费用)</el-text><br><el-text>约&nbsp;&nbsp;</el-text>
                         <el-text style="color: #000000;font-size: xx-large;" tag="b">
-                          <!-- {{ order.totalPrice + "元"}} -->
-                          {{ order.amount + "元" }}
+                          {{ order.totalPrice + "元"}}
+                          <!-- {{ order.amount + "元" }} -->
                         </el-text><br>
                       </el-col>
                     </el-row>
@@ -273,7 +273,7 @@ export default ({
       (res) => {
         console.log("全局电话=" + store.userPhoneNumber),
         console.log(res)
-        this.orders = res.data.order
+        this.orders = res.data.orderList
       },
       (err) => {
         console.log(err)
