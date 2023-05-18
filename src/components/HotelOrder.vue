@@ -283,6 +283,16 @@ export default ({
         //     totalPrice: "1,340",
         // })
 
+        //计算两个日期之间的天数
+        const dateDifference = (sDate1, sDate2) => {    //sDate1和sDate2是2006-12-18格式
+            let dateSpan, iDays
+            sDate1 = Date.parse(sDate1)
+            sDate2 = Date.parse(sDate2)
+            dateSpan = sDate2 - sDate1
+            dateSpan = Math.abs(dateSpan)
+            iDays = Math.floor(dateSpan / (24 * 3600 * 1000))
+            return (iDays - 1)
+        }
         store.state.totalPrice *= dateDifference(store.state.CurrentSelectTime[0], store.state.CurrentSelectTime[1])
         const order = ref({
             hotelName: store.state.CurrentHotelName, hotelPostion: store.state.CurrentHotelLocation,
@@ -416,16 +426,6 @@ export default ({
             payforDialogVisible.value = false         
         }
 
-        //计算两个日期之间的天数
-        const dateDifference = (sDate1, sDate2) => {    //sDate1和sDate2是2006-12-18格式
-            let dateSpan, iDays
-            sDate1 = Date.parse(sDate1)
-            sDate2 = Date.parse(sDate2)
-            dateSpan = sDate2 - sDate1
-            dateSpan = Math.abs(dateSpan)
-            iDays = Math.floor(dateSpan / (24 * 3600 * 1000))
-            return (iDays - 1)
-        }
         return{
             payforDialogVisible,
             ruleForms, rules,
