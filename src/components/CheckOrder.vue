@@ -204,7 +204,7 @@
                           margin: auto;
                         "
                         :disabled="order.commentWrited"
-                        @click="WriteComment(order.hotelId)"
+                        @click="WriteComment(order.hotelId, index)"
                       >
                         <el-image
                           style="width: 25px; height: 25px"
@@ -391,9 +391,11 @@ export default {
     var dialogCommentVisible = ref(false);
     var rateValue = ref(0);
     var commentText = ref("");
-    function WriteComment(hotelId) {
+    var currentIndex = ref(0);
+    function WriteComment(hotelId, index) {
       dialogCommentVisible.value = true;
-      currentHotelId = hotelId;
+      currentHotelId.value = hotelId;
+      currentIndex.value = index;
     }
     function SubmitComment() {
       dialogCommentVisible.value = false;
@@ -411,6 +413,7 @@ export default {
                 message: "撰写评论成功",
                 type: "success",
               });
+              orders.value[currentIndex.value].commentWrited = true;
             } else {
               ElMessage({
                 message: "出错了",
