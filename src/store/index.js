@@ -24,6 +24,8 @@ export default createStore({
         CurrentHotelLocation: "",
         CurrentHotelFigURL: "",
 
+        CurrentSelectTime: [],
+
         bookRoomInfo: [],
         //{
         //   roomId: 100,
