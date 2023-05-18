@@ -305,7 +305,7 @@ export default {
       store.state.CurrentSelectTime = searchTime.value;
       //根据bookRoomCount中的数据，进行提交，跳转到订单页面
       for (var i = 0; i < bookRoomCount.data.length; i++)
-        store.state.totalPrice += bookRoomCount.data[i].roomPrice;
+        store.state.totalPrice += bookRoomCount.data[i].roomPrice* bookRoomCount.data[i].roomNumber;
 
       router.push("/HotelOrder");
     }

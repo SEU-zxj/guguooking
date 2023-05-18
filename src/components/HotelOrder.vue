@@ -26,11 +26,13 @@
                         <el-row>
                             <el-col :span="24" style="border-bottom: solid 1px var(--el-border-color);border-radius: 0%;padding-bottom: 2%;">
                                 <el-text style="color: black;">入住总天数：</el-text><br>
-                                <el-text style="color: black;" tag="b">{{ order.totalDays + " 天" }}</el-text>
+                                <el-text style="color: black;" tag="b">
+                                    {{ dateDifference(order.checkinTime, order.checkoutTime) + " 天" }}
+                                </el-text>
                             </el-col>
                         </el-row>
                         <el-row><el-text tag="b">已选择：</el-text></el-row>
-                        <div v-for="room in order.Rooms" :key="room">
+                        <div v-for="room in roomsInfo(order.Rooms)" :key="room">
                             <el-row :gutter="0">
                                 <el-col :span="12">
                                     <el-text style="color: black;">{{ room.roomName }}</el-text>
@@ -182,7 +184,7 @@
                 </div>
                 </el-main>
                 <el-footer style="text-align: right;">
-                    <el-button style="width: 200px;height: 50px;" color="#006ce4" @click="confirmOrder">
+                    <el-button style="width: 200px;height: 50px;" color="#006ce4" @click="confirmOrder_Pre()">
                         <el-text style="font-size: large;vertical-align: middle;color: white;" tag="b">完成预定</el-text>
                     </el-button>
                 </el-footer>
@@ -230,6 +232,29 @@
             
          </div>
     </div>
+
+    <div>
+        <el-dialog v-model="payforDialogVisible" style="width: 40%;margin-top: 30px;">
+            <template #header>
+                <el-text style="color: black;font-size: x-large;" tag="b">支付</el-text>
+            </template>
+            <span style="font-size: large;">
+            请扫码支付：
+            </span>
+            <el-image
+                style="width: 70%;margin-left: 15%;margin-top: 10px;"
+                :src="require('@/assets/payfor.png')"
+            />
+            <template #footer>
+            <span style="margin-top: 10px;">
+                <el-button @click="payforDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="confirmOrder()">
+                确认支付
+                </el-button>
+            </span>
+            </template>
+        </el-dialog>
+    </div>
 </template>
 
 
@@ -244,6 +269,7 @@ import router from "@/router"
 
 export default ({
     setup() {
+        const payforDialogVisible =ref(false)
         const ruleForms = ref(null);
         // const order = ref({
         //     hotelName: "Hotel Duminy-Vendome", hotelPostion: "3/5 rue du Mont-Thabor, 1区 - 卢浮宫, 75001 巴黎, 法国",
@@ -261,10 +287,18 @@ export default ({
             figURL: store.state.CurrentHotelFigURL,
             checkinTime: store.state.CurrentSelectTime[0],
             checkoutTime: store.state.CurrentSelectTime[1],
-            totalDays: dateDifference(store.state.CurrentSelectTime[0], store.state.CurrentSelectTime[1]),
             Rooms: store.state.bookRoomInfo,
             totalPrice: store.state.totalPrice,
         })
+        const roomsInfo =(bookRoomInfo)=>{//去除房间数为0的
+            let rooms = []
+            for(let i in bookRoomInfo){
+                if(bookRoomInfo[i].roomNumber>0){
+                    rooms.push(bookRoomInfo[i])
+                }
+            }
+            return rooms
+        }
         const orderForm = reactive({
             phoneNumber: store.userPhoneNumber,
             userEmail: "",
@@ -313,6 +347,13 @@ export default ({
             { value: "23:00 - 24:00", label: "23:00 - 24:00" },
         ]
 
+        const confirmOrder_Pre =()=>{
+             ruleForms.value.validate((valid) => {
+                if (valid) {
+                    payforDialogVisible.value = true
+                }
+             })
+        }
         const confirmOrder = () =>{
             ruleForms.value.validate((valid) => {
                 if (valid) {
@@ -369,7 +410,8 @@ export default ({
                         type: "warning",
                     });
                 }
-            });            
+            });   
+            payforDialogVisible.value = false         
         }
 
         //计算两个日期之间的天数
@@ -383,13 +425,16 @@ export default ({
             return (iDays - 1)
         }
         return{
+            payforDialogVisible,
             ruleForms, rules,
             order,
             orderForm,
             InfoFilled, Coin, Money,
             options,
 
+            confirmOrder_Pre,
             confirmOrder,
+            roomsInfo,
             dateDifference,
         }
     },
