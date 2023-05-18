@@ -13,6 +13,7 @@
     <el-menu-item index="0">
       <el-image
         style="height: 100%"
+        @click="app2Main()"
         :src="require('@/assets/logo-remove-white.png')"
       />
     </el-menu-item>
@@ -23,7 +24,7 @@
       <el-tooltip
         class="box-item"
         effect="dark"
-        content="选择币种"
+        content="选择你使用的货币"
         placement="bottom"
       >
         <el-button
@@ -32,7 +33,7 @@
           color="#000000"
           @click="dialogFormVisible_money = true"
         >
-          <el-text tag="b" size="large" style="color: #fff">CNY</el-text>
+          <el-text tag="b" style="color: #fff;font-size: large;">CNY</el-text>
         </el-button>
       </el-tooltip>
 
@@ -109,21 +110,21 @@
       >
       <!-- 按钮6 注册 -->
       <el-button
-        v-if="!isLogin"
+        v-if="!store.state.isLogin"
         style="height: 40px"
         @click="dialogFormVisible_add = true"
         >注册</el-button
       >
       <!-- 按钮7 登录 -->
       <el-button
-        v-if="!isLogin"
+        v-if="!store.state.isLogin"
         style="height: 40px"
         @click="dialogFormVisible_log = true"
         >登录</el-button
       >
       <!-- 按钮8 个人账户 -->
       <el-popover
-        v-if="isLogin"
+        v-if="store.state.isLogin"
         popper-class="submenu-popover"
         placement="top-end"
         :width="220"
@@ -441,6 +442,7 @@
       >
     </el-row>
   </el-dialog>
+
   <!-- 选择语言 对话框 -->
   <el-dialog
     v-model="dialogFormVisible_language"
@@ -660,13 +662,13 @@ import { ElMessage } from "element-plus";
 import http from "../src/plugins/axiosInstance";
 // import { useStore } from "vuex"; //1.从vuex中引入useStore
 import store from "@/store/index";
-// import { useRouter } from 'vue-router'
+import router from "@/router"
+
 
 export default {
   setup() {
     // 是否登录
-    // var isLogin = ref(true);
-    var isLogin = ref(false);
+    // var isLogin = ref(false);
 
     const activeIndex = ref("1");
     const activeIndex2 = ref("1");
@@ -711,14 +713,19 @@ export default {
     const subMenufunc = (index) => {
       switch (index) {
         case 0:
-          dialogFormVisible_add = true;
           break;
         case 1:
+          app2CheckOrder();
           break;
         case 2:
           break;
         case 3:
-          isLogin.value = false;
+          //改变登录状态判断
+          store.state.isLogin = false;
+          //清除本地记录的token
+          // window.localStorage.setItem('userToken', '')
+          //返回主页面
+          router.push("/Main")
           break;
         default:
           break;
@@ -768,26 +775,29 @@ export default {
         if (valid) {
           console.log("注册 表单验证通过-all");
           // 接口
-          //http.get("url+/register?phoneNumber=123&password=123")
-          //http.post("url+/register", {xxx}).then()
           http
             .post(store.state.serverAddr + "/register", {
-              phoneNumber: addForm.tel,
+              phone: addForm.tel,
               password: addForm.pass,
             })
             .then(
               (res) => {
-                console.log("结果");
+                console.log("注册 结果");
                 console.log(res);
                 dialogFormVisible_add.value = false;
-                if (res.data.result === "true") {
+                if (res.data.result === true) {
                   //成功
                   ElMessage({
                     showClose: true,
                     message: "注册成功！",
                     type: "success",
                   });
-                  isLogin.value = true;
+                  console.log("注册成功！用户电话=" + store.userPhoneNumber)
+
+                  const form = unref(myAddForm);
+                  form.resetFields();
+
+                  dialogFormVisible_log.value = true;//显示重新登录
                 } else {
                   ElMessage({
                     showClose: true,
@@ -795,8 +805,11 @@ export default {
                     type: "error",
                   });
                 }
+                const form = unref(myAddForm);
+                form.resetFields();
               },
               (err) => {
+                console.log(err)
                 ElMessage({
                   showClose: true,
                   message: "出错了，请联系管理员处理（注册）",
@@ -804,8 +817,6 @@ export default {
                 });
               }
             );
-          const form = unref(myAddForm);
-          form.resetFields();
         } else {
           console.log("注册 表单验证未通过");
         }
@@ -888,27 +899,55 @@ export default {
     function FormConfirm() {
       myLogForm.value.validate((valid) => {
         if (valid) {
-          dialogFormVisible_log.value = false;
           console.log("log表单验证通过-all");
+          console.log(store.state.serverAddr + "/login?phone=" + logForm.tel + "&password=" + logForm.pass);
           // 接口
-          //成功
-          if (true) {
-            isLogin.value = true;
-          } else {
-            ElMessage({
-              showClose: true,
-              message: "您还没有注册账户，请先注册",
-            });
-            dialogFormVisible_log.value = false;
-            dialogFormVisible_add.value = true;
-          }
+          // http.post(store.state.serverAddr + "/login",
+          // {
+          //   phoneNumber: logForm.tel,
+          //   password: logForm.pass,
+          // })
+          http.get(store.state.serverAddr + "/login?phone=" + logForm.tel + "&password=" + logForm.pass )
+            .then(
+            (res) => {
+              console.log(res)
+              if(res.data.code == 0){
+                
+                dialogFormVisible_log.value = false;
 
-          console.log(dialogFormVisible_log);
-          console.log("电话=" + logForm.tel);
-          console.log("密码=" + logForm.pass);
+                store.userPhoneNumber = logForm.tel
+                console.log("成功登录！用户电话=" + store.userPhoneNumber)
+                //记录token
+                // window.localStorage.setItem('userToken', res.data.data.token)
+                //记录登录状态
+                store.state.isLogin = true;
 
-          const form = unref(myLogForm);
-          form.resetFields();
+                const form = unref(myLogForm);
+                form.resetFields();
+                setTimeout(() => {//提示登录成功并0.5s后返回先前界面
+                    router.go(-1);
+                  }, 500);
+              }else{
+                ElMessage({
+                  showClose: true,
+                  message: "您还没有注册账户，请先注册",
+                });
+                dialogFormVisible_log.value = false;//消失 登录对话框
+                dialogFormVisible_add.value = true;//显示 注册对话框
+              }
+              const form = unref(myLogForm);
+              form.resetFields();
+            },
+            (err) => {
+              console.log(err)
+              ElMessage({
+                showClose: true,
+                message: "出错了，请联系管理员处理（登录）",
+                type: "error",
+              });
+            }
+          )
+
         } else {
           console.log("log表单验证未通过");
         }
@@ -921,40 +960,47 @@ export default {
       dialogFormVisible_log.value = false;
     }
     function Login() {}
-    function Register() {
-      let that = this;
-      console.log("Register");
-      http.get("https://autumnfish.cn/api/joke/list?num=2").then(
-        (res) => {
-          console.log(res);
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
+    // function Register() {
+    //   let that = this;
+    //   console.log("Register");
+    //   http.get("https://autumnfish.cn/api/joke/list?num=2").then(
+    //     (res) => {
+    //       console.log(res);
+    //     },
+    //     (err) => {
+    //       console.log(err);
+    //     }
+    //   );
 
-      http
-        .post(
-          "https://581270ee-1944-469d-ad92-aee670aeb511.mock.pstmn.io/loginTest",
-          {
-            phoneNumber: "123456",
-            password: "1234",
-          }
-        )
-        .then(
-          (res) => {
-            console.log(res);
-          },
-          (err) => {
-            console.log(err);
-          }
-        );
-      store.state.num += 1;
-      console.log(store.state.num);
+    //   http
+    //     .post(
+    //       "https://581270ee-1944-469d-ad92-aee670aeb511.mock.pstmn.io/loginTest",
+    //       {
+    //         phoneNumber: "123456",
+    //         password: "1234",
+    //       }
+    //     )
+    //     .then(
+    //       (res) => {
+    //         console.log(res);
+    //       },
+    //       (err) => {
+    //         console.log(err);
+    //       }
+    //     );
+    //   store.state.num += 1;
+    //   console.log(store.state.num);
+    // }
+
+    /* 跳转函数 */
+    const app2Main = () =>{
+      router.push("/Main")
+    }
+    const app2CheckOrder = () => {
+      router.push("/CheckOrder")
     }
     return {
       /* 变量 */
-      isLogin, // 是否登录
       activeIndex,
       activeIndex2,
       //币种
@@ -984,8 +1030,10 @@ export default {
       addFormConfirm,
       FormCancle,
       FormConfirm,
-      Register,
+      // Register,
       Login,
+      /* 跳转 */
+      app2Main, app2CheckOrder,
     };
   },
 };

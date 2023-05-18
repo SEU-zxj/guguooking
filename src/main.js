@@ -14,5 +14,4 @@ app.config.globalProperties.$axios=axios;
 app.config.globalProperties.$store=store;
 app.use(store)
 
-
 router.isReady().then(() => app.mount('#app'))

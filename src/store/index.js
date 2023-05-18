@@ -15,6 +15,9 @@ export default createStore({
         searchPeopleNumber: 0,
         searchType: "",
 
+        userPhoneNumber: "",
+        isLogin: false,
+
         searchHotelId: 0,
     },
     mutations: {},
