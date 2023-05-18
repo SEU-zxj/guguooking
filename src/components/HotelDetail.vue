@@ -323,10 +323,12 @@ export default {
       var send_checkoutTime = "9999-01-01";
       var send_roomCount = 0;
       //根据给定的时间和人数数据重新进行空房搜索
-      if (searchTime.value[0] === undefined) send_checkinTime = "0000-00-00";
+      if (searchTime.value[0] === undefined)
+        send_checkinTime = store.state.searchCheckinTime;
       else send_checkinTime = searchTime.value[0];
 
-      if (searchTime.value[1] === undefined) send_checkoutTime = "9999-01-01";
+      if (searchTime.value[1] === undefined)
+        send_checkoutTime = store.state.searchCheckoutTime;
       else send_checkoutTime = searchTime.value[1];
 
       if (searchPeopleNumber.value === undefined) send_roomCount = 1;
