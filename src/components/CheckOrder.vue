@@ -210,8 +210,11 @@
                           style="width: 25px; height: 25px"
                           :src="require('@/assets/menu_icon/my_icon/order.svg')"
                         />
-                        <el-text style="font-size: medium">
-                          &nbsp;&nbsp;查看行程和订单详情</el-text
+                        <el-text
+                          style="font-size: medium"
+                          @click="WriteComment"
+                        >
+                          &nbsp;&nbsp;撰写评论</el-text
                         >
                       </el-button></el-col
                     >
@@ -376,6 +379,10 @@ export default {
       return sumRoomNum;
     };
 
+    function WriteComment() {
+      console.log("撰写评论");
+    }
+
     return {
       numOfOrder,
       orders,
@@ -385,6 +392,7 @@ export default {
       time2time,
       dateDifference,
       sumRoomNum,
+      WriteComment,
     };
   },
   mounted() {
