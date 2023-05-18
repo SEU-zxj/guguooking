@@ -282,6 +282,8 @@ export default ({
         //     ],
         //     totalPrice: "1,340",
         // })
+
+        store.state.totalPrice *= dateDifference(store.state.CurrentSelectTime[0], store.state.CurrentSelectTime[1])
         const order = ref({
             hotelName: store.state.CurrentHotelName, hotelPostion: store.state.CurrentHotelLocation,
             figURL: store.state.CurrentHotelFigURL,
