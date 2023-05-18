@@ -132,6 +132,7 @@ import { computed, reactive, ref } from "vue";
 import router from "@/router"; // 引入userRouter
 import http from "@/plugins/axiosInstance";
 import store from "@/store";
+import { ElMessage } from "element-plus";
 
 export default {
   name: "HotelDetail",
@@ -304,10 +305,21 @@ export default {
       store.state.bookRoomInfo = bookRoomCount.data;
       store.state.CurrentSelectTime = searchTime.value;
       //根据bookRoomCount中的数据，进行提交，跳转到订单页面
-      for (var i = 0; i < bookRoomCount.data.length; i++)
-        store.state.totalPrice += bookRoomCount.data[i].roomPrice* bookRoomCount.data[i].roomNumber;
-
-      router.push("/HotelOrder");
+      var count = 0;
+      for (var i = 0; i < bookRoomCount.data.length; i++) {
+        store.state.totalPrice +=
+          bookRoomCount.data[i].roomPrice * bookRoomCount.data[i].roomNumber;
+        count += bookRoomCount.data[i].roomNumber;
+      }
+      console.log(searchTime.value.length);
+      if (count === 0 || searchTime.value.length === 0) {
+        ElMessage({
+          message: "请确保至少选择一个房间或者日期进行预定",
+          type: "warning",
+        });
+      } else {
+        router.push("/HotelOrder");
+      }
     }
 
     let activeTag = computed(() => {
@@ -323,13 +335,15 @@ export default {
       var send_checkoutTime = "9999-01-01";
       var send_roomCount = 0;
       //根据给定的时间和人数数据重新进行空房搜索
-      if (searchTime.value[0] === undefined)
+      if (searchTime.value[0] === undefined) {
         send_checkinTime = store.state.searchCheckinTime;
-      else send_checkinTime = searchTime.value[0];
+        if (send_checkinTime === undefined) send_checkinTime = "0000-00-00";
+      } else send_checkinTime = searchTime.value[0];
 
-      if (searchTime.value[1] === undefined)
+      if (searchTime.value[1] === undefined) {
         send_checkoutTime = store.state.searchCheckoutTime;
-      else send_checkoutTime = searchTime.value[1];
+        if (send_checkoutTime === undefined) send_checkoutTime = "9999-01-01";
+      } else send_checkoutTime = searchTime.value[1];
 
       if (searchPeopleNumber.value === undefined) send_roomCount = 1;
       else send_roomCount = searchPeopleNumber.value;
