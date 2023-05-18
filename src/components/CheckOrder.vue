@@ -264,11 +264,11 @@ export default ({
         }
     },
     mounted(){
-      // http.post(store.state.serverAddr + "/orderCheck",{
-      //   phoneNumber: store.userPhoneNumber,
-      // })
+      http.post(store.state.serverAddr + "/orderCheck",{
+        phoneNumber: store.userPhoneNumber,
+      })
       // http.get(store.state.serverAddr + "/orderCheck?phone=" + store.userPhoneNumber,)
-      http.get(store.state.serverAddr + "/orderCheck?userId=5")
+      // http.get(store.state.serverAddr + "/orderCheck?userId=5")
       .then(
       (res) => {
         console.log("全局电话=" + store.userPhoneNumber),

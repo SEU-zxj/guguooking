@@ -245,16 +245,25 @@ import router from "@/router"
 export default ({
     setup() {
         const ruleForms = ref(null);
+        // const order = ref({
+        //     hotelName: "Hotel Duminy-Vendome", hotelPostion: "3/5 rue du Mont-Thabor, 1区 - 卢浮宫, 75001 巴黎, 法国",
+        //     checkinTime: "2023年6月22日周四",
+        //     checkoutTime: "2023年6月25日周六",
+        //     totalDays: "2",
+        //     Rooms: [
+        //         { roomName: "大床房", roomNumber: "1" },
+        //         { roomName: "舒适单人房", roomNumber: "2" },
+        //     ],
+        //     totalPrice: "1,340",
+        // })
         const order = ref({
-            hotelName: "Hotel Duminy-Vendome", hotelPostion: "3/5 rue du Mont-Thabor, 1区 - 卢浮宫, 75001 巴黎, 法国",
+            hotelName: store.state.CurrentHotelName, hotelPostion: store.state.CurrentHotelLocation,
+            figURL: store.state.CurrentHotelFigURL,
             checkinTime: "2023年6月22日周四",
             checkoutTime: "2023年6月25日周六",
             totalDays: "2",
-            Rooms: [
-                { roomName: "大床房", roomNumber: "1" },
-                { roomName: "舒适单人房", roomNumber: "2" },
-            ],
-            totalPrice: "1,340",
+            Rooms: store.state.bookRoomInfo,
+            totalPrice: store.state.totalPrice,
         })
         const orderForm = reactive({
             phoneNumber: store.userPhoneNumber,
@@ -362,6 +371,17 @@ export default ({
                 }
             });            
         }
+
+        //计算两个日期之间的天数
+        const dateDifference = (sDate1, sDate2) => {    //sDate1和sDate2是2006-12-18格式
+            let dateSpan, iDays
+            sDate1 = Date.parse(sDate1)
+            sDate2 = Date.parse(sDate2)
+            dateSpan = sDate2 - sDate1
+            dateSpan = Math.abs(dateSpan)
+            iDays = Math.floor(dateSpan / (24 * 3600 * 1000))
+            return (iDays - 1)
+        }
         return{
             ruleForms, rules,
             order,
@@ -370,6 +390,7 @@ export default ({
             options,
 
             confirmOrder,
+            dateDifference,
         }
     },
 })

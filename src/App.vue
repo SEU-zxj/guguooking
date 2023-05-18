@@ -902,12 +902,12 @@ export default {
           console.log("log表单验证通过-all");
           console.log(store.state.serverAddr + "/login?phone=" + logForm.tel + "&password=" + logForm.pass);
           // 接口
-          // http.post(store.state.serverAddr + "/login",
-          // {
-          //   phoneNumber: logForm.tel,
-          //   password: logForm.pass,
-          // })
-          http.get(store.state.serverAddr + "/login?phone=" + logForm.tel + "&password=" + logForm.pass )
+          http.post(store.state.serverAddr + "/login",
+          {
+            phoneNumber: logForm.tel,
+            password: logForm.pass,
+          })
+          // http.get(store.state.serverAddr + "/login?phone=" + logForm.tel + "&password=" + logForm.pass )
             .then(
             (res) => {
               console.log(res)
