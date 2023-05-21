@@ -123,7 +123,7 @@
         <el-col
           v-for="o in popularHotels.data.length"
           :key="o"
-          :span="5"
+          :span="7"
           :offset="o == 1 ? 2 : 0"
         >
           <el-card :body-style="{ padding: '0px' }">
@@ -221,15 +221,24 @@ export default {
   setup() {
     //*******************************************************//
     //******请求受欢迎的酒店*********************************//
-    var popularHotels = reactive({ data: [{}, {}, {}, {}] });
-    http.post(store.state.serverAddr + "/getPopular", {}).then(
-      (res) => {
-        popularHotels.data = res.data.hotelList;
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
+    var popularHotels = reactive({ data: [{}, {}, {}] });
+    http
+      .get(store.state.serverAddr2 + "/getPopular", {
+        params: {},
+        headers: {
+          token:
+            "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI2NmNhYmFlY2ZjNTA0MWI2OTFmZTBkYTBlYjJhMWEyNiIsInN1YiI6IjMiLCJpc3MiOiJzZyIsImlhdCI6MTY4NDY1MTA4NiwiZXhwIjoxNjg0NzM3NDg2fQ.D01LBbpp6W2eHw0TeED1g97Oi7L087LEDcxilk7Ib8M",
+        },
+      })
+      .then(
+        (res) => {
+          // popularHotels.data = res.data.hotelList;
+          console.log(res);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
     const location = ref([]);
     const options = [
       {

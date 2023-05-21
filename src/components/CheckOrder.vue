@@ -221,7 +221,7 @@
             </el-card>
           </div>
           <el-dialog v-model="dialogCommentVisible" title="撰写评论">
-            <span class="demonstration">Default</span>
+            <span class="demonstration">评分</span>
             <el-rate v-model="rateValue" />
             <el-input
               v-model="commentText"
