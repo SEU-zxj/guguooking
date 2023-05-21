@@ -2,7 +2,6 @@
     <div class="hotelorder-layout">
         <el-container >
             <el-aside style="width: 33%;">
-                <el-row>
                     <el-card class="aside-card" shadow="never">
                         <template #header>
                             <div><el-text tag="b" style="color: black;font-size: large;">订单详情</el-text></div>
@@ -47,7 +46,12 @@
                         <template #header>
                             <div><el-text tag="b" style="color: black;font-size: large;">价格汇总</el-text></div>
                         </template>
-                        <el-row :gutter="0" style="border-bottom: solid 1px var(--el-border-color);padding-bottom: 10px;">
+                        <div style="background-color: #ebf3ff;margin-left: -20px;margin-right: -20px;margin-top: -20px;">
+                            <el-row 
+                                :gutter="0" 
+                                style="
+                                    border-bottom: solid 1px var(--el-border-color);
+                                    padding: 20px;">
                             <el-col :span="6" >
                                 <el-text tag="b" style="font-size: x-large;color: black;">价格</el-text>
                             </el-col>
@@ -55,7 +59,9 @@
                                 <el-text tag="b" style="font-size: x-large;color: black;">{{ order.totalPrice + "元" }}</el-text>
                             </el-col>
                         </el-row>
-                        <el-row><el-text tag="b" style="color: black;">价格信息</el-text></el-row>
+                        </div>
+                        
+                        <el-row><el-text tag="b" style="color: black;margin-top: 20px;">价格信息</el-text></el-row>
                         <el-row>
                             <el-col :span="3">
                                 <el-image style="width: 20px;vertical-align: middle;" :src="require('@/assets/price/price1.png')"/>
@@ -84,7 +90,12 @@
                             </el-col>
                         </el-row>
                     </el-card>
-                </el-row>
+                    <el-card class="aside-card" shadow="never">
+                        <template #header>
+                            <div><el-text tag="b" style="color: black;font-size: large;">付款安排</el-text></div>
+                        </template>
+                        <el-text style="color: black;"><el-text style="color: black;">住宿提供方将随时向你收取预付款。</el-text></el-text>
+                    </el-card>
             </el-aside>
             <el-container style="margin-top: -20px;">
                 <el-main>
