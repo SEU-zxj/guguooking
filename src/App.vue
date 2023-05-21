@@ -777,7 +777,7 @@ export default {
           console.log("注册 表单验证通过-all");
           // 接口
           http
-            .post(store.state.serverAddr + "/register", {
+            .post(store.state.serverAddr2 + "/register", {
               phone: addForm.tel,
               password: addForm.pass,
             })
@@ -909,12 +909,19 @@ export default {
               logForm.pass
           );
           // 接口
+          // http
+          //   .post(store.state.serverAddr + "/login", {
+          //     phoneNumber: logForm.tel,
+          //     password: logForm.pass,
+          //   })
           http
-            .post(store.state.serverAddr + "/login", {
-              phoneNumber: logForm.tel,
-              password: logForm.pass,
-            })
-            // http.get(store.state.serverAddr + "/login?phone=" + logForm.tel + "&password=" + logForm.pass )
+            .get(
+              store.state.serverAddr2 +
+                "/login?phone=" +
+                logForm.tel +
+                "&password=" +
+                logForm.pass
+            )
             .then(
               (res) => {
                 console.log(res);
