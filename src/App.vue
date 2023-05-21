@@ -663,6 +663,7 @@ import http from "../src/plugins/axiosInstance";
 // import { useStore } from "vuex"; //1.从vuex中引入useStore
 import store from "@/store/index";
 import router from "@/router";
+import { stringify } from "querystring";
 
 export default {
   setup() {
@@ -786,7 +787,7 @@ export default {
                 console.log("注册 结果");
                 console.log(res);
                 dialogFormVisible_add.value = false;
-                if (res.data.result === true) {
+                if (res.data.code === "0") {
                   //成功
                   ElMessage({
                     showClose: true,
@@ -902,7 +903,7 @@ export default {
         if (valid) {
           console.log("log表单验证通过-all");
           console.log(
-            store.state.serverAddr +
+            store.state.serverAddr2 +
               "/login?phone=" +
               logForm.tel +
               "&password=" +
@@ -915,17 +916,16 @@ export default {
           //     password: logForm.pass,
           //   })
           http
-            .get(
-              store.state.serverAddr2 +
-                "/login?phone=" +
-                logForm.tel +
-                "&password=" +
-                logForm.pass
-            )
+            .get(store.state.serverAddr2 + "/login", {
+              params: {
+                phone: logForm.tel,
+                password: logForm.pass,
+              },
+            })
             .then(
               (res) => {
                 console.log(res);
-                if (res.data.result) {
+                if (res.data.code === "0") {
                   dialogFormVisible_log.value = false;
 
                   store.userPhoneNumber = logForm.tel;
