@@ -8,179 +8,192 @@
         <el-image :src="showFigures[idx - 1]" :fit="imgFitCover"> </el-image>
       </el-carousel-item>
     </el-carousel>
-    <!--选择框-->
-    <div class="ChooseOutterBox">
-      <div class="ChooseInnerBox">
-        <el-cascader
-          v-model="location"
-          :options="options"
-          placeholder="请选择地点"
-        />
-      </div>
-
-      <div class="ChooseInnerBox">
-        <el-date-picker
-          v-model="timeRange"
-          value-format="YYYY-MM-DD"
-          type="daterange"
-          range-separator="To"
-          start-placeholder="Start date"
-          end-placeholder="End date"
-        />
-      </div>
-
-      <div class="ChooseInnerBox">
-        <el-input-number v-model="peopleNum" placeholder="·位客人" />
-      </div>
-
-      <div class="ChooseInnerBox">
-        <el-button type="primary" @click="fullSearch">搜索</el-button>
-      </div>
-    </div>
-    <!--[按地点]按地点横排-->
-    <div class="TextHeader">
-      <h1>快速轻松的规划旅行</h1>
-    </div>
-    <div class="PositionBox">
-      <el-row gutter="50" class="RowLayout1">
-        <el-col
-          v-for="o in positionHotel.length"
-          :key="o"
-          :span="5"
-          :offset="o == 1 ? 2 : 0"
-        >
-          <el-card :body-style="{ padding: '0px' }">
-            <el-image
-              :src="positionHotel[o - 1].figURL"
-              :fit="imgFitCover"
-              class="image"
+    
+    <div style="margin-left: 11.5%; margin-right: 11.5%;">
+      <!--选择框-->
+      <div>
+        <el-row :gutter="5" style="background-color: #ffb700;border-radius: 8px;height: 50px;padding: 5px 3px;">
+          <el-col :span="7" >
+            <el-cascader
+            v-model="location"
+            :options="options"
+            placeholder="请选择地点"
+            size="large"
+            style="width: 100%;"
+          />
+          </el-col>
+          <el-col :span="7" style="padding-right: 23px;">
+            <el-date-picker
+              v-model="timeRange"
+              value-format="YYYY-MM-DD"
+              type="daterange"
+              range-separator="To"
+              start-placeholder="Start date"
+              end-placeholder="End date"
+              style="width: 100%;height: 100%;"
             />
-            <div style="padding: 14px">
-              <span>{{ positionHotel[o - 1].description }}</span>
-              <div class="bottom">
-                <el-button text class="button" @click="ClickCountry(o - 1)"
-                  >去看看</el-button
-                >
-              </div>
-            </div>
-          </el-card>
-        </el-col>
-      </el-row>
-    </div>
+          </el-col>
+          <el-col :span="7">
+            <el-input-number v-model="peopleNum" style="width: 100%;height: 100%;" placeholder="·位客人" />
+          </el-col>
+          <el-col :span="3">
+            <el-button style="width: 100%;height: 100%;" color="black" @click="fullSearch">搜索</el-button>
+          </el-col>
+        </el-row>
+      </div>
 
-    <!--[文章推荐]精彩下一站，灵感这里找-->
-    <div class="TextHeader">
-      <h1>精彩下一站，灵感这里找</h1>
-    </div>
-    <div class="NoteBox">
-      <el-row class="RowLayout" :gutter="10">
-        <el-col class="ColLayout" :span="11" :offset="1">
-          <div class="leftFigureBox">
-            <el-image
-              src="https://ac-a.static.booking.cn/xdata/images/xphoto/540x405/208985472.webp?k=68a3261af9bc68c05a7dfb0ec2a5b3fb5b79c0c6af4b8ff007594ac6f76fba2f&o="
-              :fit="imgFitCover"
-              @click="ClickPicture1"
-              style="cursor: pointer"
+        <!--[按地点]按地点横排-->
+        <div class="TextHeader">
+          <h1>快速轻松的规划旅行</h1>
+        </div>
+        <div class="PositionBox">
+          <el-row gutter="20" class="RowLayout1">
+            <el-col
+              v-for="o in positionHotel.length"
+              :key="o"
+              :span="6"
             >
-            </el-image>
-          </div>
-        </el-col>
-        <el-col class="ColLayout" :span="11">
-          <el-row class="UpperFigureOuterBox">
-            <el-image
-              style="width: 45%; height: 100%; cursor: pointer"
-              src="https://cf.bstatic.com/xdata/images/xphoto/540x405/137111309.webp?k=ce137c462680bc6d6d351866c4afed47794f355c0281aaa9581cbbbc0e6f3327&o="
-              :fit="imgFitCover"
-              @click="ClickPicture2"
-            ></el-image>
-            <div class="textBox">
-              <h1>加拿大</h1>
-              <el-text truncated> 假期灵感：加拿大-路易斯湖 </el-text>
-            </div>
+              <el-card :body-style="{ padding: '0px' }">
+                <el-image
+                  :src="positionHotel[o - 1].figURL"
+                  :fit="imgFitCover"
+                  class="image"
+                />
+                <div style="padding: 14px">
+                  <span>{{ positionHotel[o - 1].description }}</span>
+                  <div class="bottom">
+                    <el-button text class="button" @click="ClickCountry(o - 1)"
+                      >去看看</el-button
+                    >
+                  </div>
+                </div>
+              </el-card>
+            </el-col>
           </el-row>
-          <el-row class="LowerFigureOuterBox">
-            <div class="textBox">
-              <h1>法国</h1>
-              <el-text truncated> 精选·七座享有盛名的法国葡萄酒庄园 </el-text>
-            </div>
-            <el-image
-              style="width: 45%; height: 100%; cursor: pointer"
-              src="https://cf.bstatic.com/xdata/images/xphoto/540x405/139790841.webp?k=14e384da30076fd7ea81f530718c535128f8a1871db19b0da19a61506c0a4855&o="
-              :fit="imgFitCover"
-              @Click="ClickPiture3"
-            ></el-image>
-          </el-row>
-        </el-col>
-      </el-row>
-    </div>
+        </div>
 
-    <!--[按评分推荐]最受用户欢迎的酒店-->
-    <div class="TextHeader">
-      <h1>用户最喜爱的酒店</h1>
-    </div>
-    <div class="RatingBox">
-      <el-row gutter="50" class="RowLayout">
-        <el-col
-          v-for="o in popularHotels.data.length"
-          :key="o"
-          :span="7"
-          :offset="o == 1 ? 2 : 0"
-        >
-          <el-card :body-style="{ padding: '0px' }">
-            <el-image :src="popularHotels.data[o - 1].figURL"> </el-image>
-            <div style="padding: 14px">
-              <span>{{ popularHotels.data[o - 1].hotelName }}</span>
-              <p>
-                <el-text size="small">{{
-                  popularHotels.data[o - 1].briefIntro
-                }}</el-text>
-              </p>
-
-              <p>
-                <el-text size="small">{{
-                  popularHotels.data[o - 1].price
-                }}</el-text>
-              </p>
-
-              <div class="bottom">
-                <p>
-                  {{ popularHotels.data[o - 1].score }}
-                  <el-text size="small">
-                    {{ popularHotels.data[o - 1].commentNumber }}条用户评论
-                  </el-text>
-                </p>
-                <el-button text @click="CheckPopularHotel(o - 1)"
-                  >查看</el-button
+        <!--[文章推荐]精彩下一站，灵感这里找-->
+        <div class="TextHeader">
+          <h1>精彩下一站，灵感这里找</h1>
+        </div>
+        <div class="NoteBox">
+          <el-row class="RowLayout" :gutter="20">
+            <el-col class="ColLayout" :span="11">
+              <div class="leftFigureBox">
+                <el-image
+                  src="https://ac-a.static.booking.cn/xdata/images/xphoto/540x405/208985472.webp?k=68a3261af9bc68c05a7dfb0ec2a5b3fb5b79c0c6af4b8ff007594ac6f76fba2f&o="
+                  :fit="imgFitCover"
+                  @click="ClickPicture1"
+                  style="cursor: pointer;border-radius: 8px;"
                 >
+                </el-image>
               </div>
-            </div>
-          </el-card>
-        </el-col>
-      </el-row>
+            </el-col>
+            <el-col class="ColLayout" :span="13">
+              <el-row class="UpperFigureOuterBox">
+                <el-image
+                  style="width: 45%; height: 100%; cursor: pointer;border-radius: 8px;"
+                  src="https://cf.bstatic.com/xdata/images/xphoto/540x405/137111309.webp?k=ce137c462680bc6d6d351866c4afed47794f355c0281aaa9581cbbbc0e6f3327&o="
+                  :fit="imgFitCover"
+                  @click="ClickPicture2"
+                ></el-image>
+                <div class="textBox" style="padding-left: 20px;">
+                  <h1>加拿大</h1>
+                  <el-text truncated> 假期灵感：加拿大-路易斯湖 </el-text>
+                </div>
+              </el-row>
+              <el-row class="LowerFigureOuterBox">
+                <div class="textBox">
+                  <h1>法国</h1>
+                  <el-text truncated> 精选·七座享有盛名的法国葡萄酒庄园 </el-text>
+                </div>
+                <el-image
+                  style="width: 45%; height: 100%; cursor: pointer;border-radius: 8px;"
+                  src="https://cf.bstatic.com/xdata/images/xphoto/540x405/139790841.webp?k=14e384da30076fd7ea81f530718c535128f8a1871db19b0da19a61506c0a4855&o="
+                  :fit="imgFitCover"
+                  @Click="ClickPiture3"
+                ></el-image>
+              </el-row>
+            </el-col>
+          </el-row>
+        </div>
+
+        <!--[按评分推荐]最受用户欢迎的酒店-->
+        <div class="TextHeader">
+          <h1>用户最喜爱的酒店</h1>
+        </div>
+        <div class="RatingBox">
+          <el-row gutter="20" class="RowLayout">
+            <el-col
+              v-for="o in popularHotels.data.length"
+              :key="o"
+              :span="8"
+            >
+              <el-card :body-style="{ padding: '0px' }">
+                <el-image :src="popularHotels.data[o - 1].figURL"> </el-image>
+                <div style="padding: 14px">
+                  <span>{{ popularHotels.data[o - 1].hotelName }}</span>
+                  <p>
+                    <el-text size="small">{{
+                      popularHotels.data[o - 1].briefIntro
+                    }}</el-text>
+                  </p>
+
+                  <p>
+                    <el-text size="small">{{
+                      popularHotels.data[o - 1].price
+                    }}</el-text>
+                  </p>
+
+                  <div class="bottom">
+                    <el-row :gutter="10">
+                      <el-col :span="4">
+                        <div style="border-radius: 10px 10px 10px 0px;background-color: #ffb700;width: 40px;height: 40px;">
+                          <el-text style="color: white;">{{ popularHotels.data[o - 1].score }}</el-text>
+                        </div>
+                        
+                      </el-col>
+                      <el-col :span="14">
+                        <el-text size="small">
+                        {{ popularHotels.data[o - 1].commentNumber }}条用户评论
+                      </el-text>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-button style="width: 100%;height: 100%;" color="black" @click="CheckPopularHotel(o - 1)">查看</el-button>
+                      </el-col>
+                    </el-row>
+                    
+                  </div>
+                </div>
+              </el-card>
+            </el-col>
+          </el-row>
+        </div>
+
+        <!--[按住宿类型]-->
+        <div class="TextHeader">
+          <h1>根据住宿类型浏览</h1>
+        </div>
+        <div class="TypeBox">
+          <el-row :gutter="60" class="TypeRowLayout">
+            <el-col
+              v-for="o in hotelTypeURLList.data.length"
+              :key="o"
+              :span="8"
+            >
+              <el-image
+                :src="hotelTypeURLList.data[o - 1]"
+                style="width: 100%; height: 100%; cursor: pointer;border-radius: 8px;"
+                :fit="imgFitCover"
+                @click="ClickHotelTypes(o)"
+              ></el-image>
+              <el-text style="color: black;font-size: large;" tag="b">{{ hotelType[o - 1] }}</el-text>
+            </el-col>
+          </el-row>
+        </div>
     </div>
 
-    <!--[按住宿类型]-->
-    <div class="TextHeader">
-      <h1>根据住宿类型浏览</h1>
-    </div>
-    <div class="TypeBox">
-      <el-row :gutter="60" class="TypeRowLayout">
-        <el-col
-          v-for="o in hotelTypeURLList.data.length"
-          :key="o"
-          :span="6"
-          :offset="o == 1 ? 3 : 0"
-        >
-          <el-image
-            :src="hotelTypeURLList.data[o - 1]"
-            style="width: 100%; height: 100%; cursor: pointer"
-            :fit="imgFitCover"
-            @click="ClickHotelTypes(o)"
-          ></el-image>
-          <p>{{ hotelType[o - 1] }}</p>
-        </el-col>
-      </el-row>
-    </div>
+
     <div style="height: 10vh"></div>
     <div class="BottomInfoBox">
       <el-row :gutter="30" style="width: 100%; height: 100%">
@@ -208,6 +221,7 @@
       </el-row>
     </div>
   </div>
+    
 </template>
 
 <script>
@@ -293,7 +307,7 @@ export default {
       },
     ];
     const timeRange = ref([]);
-    const imgFitCover = "contain";
+    const imgFitCover = "cover";
     const peopleNum = ref();
 
     const hotelType = ["酒店", "公寓", "民宿"];
@@ -480,14 +494,13 @@ export default {
 .bottom {
   margin-top: 13px;
   line-height: 12px;
-  display: flex;
-  justify-content: center;
   align-items: center;
 }
 
 .button {
-  padding: 0;
   min-height: auto;
+  width: 100%;
+  height: 100%;
 }
 
 .image {
@@ -498,10 +511,10 @@ export default {
   text-align: center;
 }
 .RowLayout1 {
-  width: 100vw;
+  width: 100%;
 }
 .RowLayout {
-  width: 100vw;
+  width: 100%;
   height: 50vh;
 }
 .ColLayout {
@@ -519,11 +532,11 @@ export default {
 }
 .UpperFigureOuterBox {
   width: 100%;
-  height: 50%;
+  height: 43%;
 }
 .LowerFigureOuterBox {
   width: 100%;
-  height: 50%;
+  height: 43%;
 }
 .textBox {
   width: 50%;
@@ -532,11 +545,11 @@ export default {
 
 .NoteBox {
   height: 50vh;
-  width: 100vw;
+  width: 100%;
 }
 
 .TypeBox {
-  height: 40vh;
+  height: 30vh;
   width: 100%;
 }
 .TypeRowLayout {
@@ -546,7 +559,6 @@ export default {
 
 .TextHeader {
   width: 100%;
-  margin-left: 10%;
 }
 
 .BottomInfoBox {
