@@ -663,7 +663,6 @@ import http from "../src/plugins/axiosInstance";
 // import { useStore } from "vuex"; //1.从vuex中引入useStore
 import store from "@/store/index";
 import router from "@/router";
-import { stringify } from "querystring";
 
 export default {
   setup() {
