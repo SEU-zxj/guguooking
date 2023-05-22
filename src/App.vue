@@ -929,6 +929,8 @@ export default {
 
                   store.userPhoneNumber = logForm.tel;
                   console.log("成功登录！用户电话=" + store.userPhoneNumber);
+
+                  store.state.userToken = res.data.data.token;
                   //记录token
                   // window.localStorage.setItem('userToken', res.data.data.token)
                   //记录登录状态
