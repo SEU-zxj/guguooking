@@ -152,6 +152,18 @@ export default {
         .replace("yyyy", date.getFullYear())
         .replace("dd", date.getDate());
     }
+
+    function formatDate1(date, format) {
+      var fmonth = date.getMonth() + 1;
+      if (fmonth < 10) {
+        fmonth = "0" + fmonth;
+      }
+      return format
+        .replace("mm", fmonth)
+        .replace("yyyy", date.getFullYear())
+        .replace("dd", date.getDate() + 1);
+    }
+
     console.log(
       dateDifference(
         formatDate(currentDate, "yyyy-mm-dd"),
@@ -195,6 +207,9 @@ export default {
           }
         );
     } else if (store.state.searchHotelListType === "countrySearch") {
+      store.state.searchCheckinTime = formatDate(currentDate, "yyyy-mm-dd");
+      store.state.searchCheckoutTime = formatDate1(currentDate, "yyyy-mm-dd");
+      store.state.searchPeopleNumber = 1;
       http
         .get(store.state.serverAddr2 + "/countrySearch", {
           params: {
@@ -333,6 +348,7 @@ export default {
       formatDate,
       time2time,
       dateDifference,
+      formatDate1,
     };
   },
 };
