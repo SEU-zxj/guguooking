@@ -946,7 +946,7 @@ export default {
                 } else {
                   ElMessage({
                     showClose: true,
-                    message: "您还没有注册账户，请先注册",
+                    message: res.data.msg,
                   });
                   dialogFormVisible_log.value = false; //消失 登录对话框
                   dialogFormVisible_add.value = true; //显示 注册对话框
