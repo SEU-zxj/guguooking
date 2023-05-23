@@ -116,10 +116,8 @@
                     </el-col>
                     <el-col
                       :span="5"
-                      style="
-                        border-right: solid 1px var(--el-border-color);
-                        border-radius: 0%;
-                      "
+                      style="border-right: solid 1px var(--el-border-color);
+                        border-radius: 0%;"
                     >
                       <el-text>退房时间</el-text><br />
                       <el-text
@@ -145,18 +143,16 @@
                     </el-col>
                     <el-col
                       :span="6"
-                      style="
-                        border-right: solid 1px var(--el-border-color);
-                        border-radius: 0%;"
+                      style="border-right: solid 1px var(--el-border-color);border-radius: 0%;"
                     >
                       <el-row>
                         <el-col :span="11">
-                          <el-text>人数</el-text><br />
+                          <el-text>客房数</el-text><br />
                           <el-text
                             style="color: #000000; font-size: xx-large"
                             tag="b"
                           >
-                            {{ order.numOfpeople }}
+                            {{ order.numOfroom }}
                           </el-text>
                         </el-col>
                         <el-col :span="2"
@@ -512,7 +508,7 @@ export default {
               checkinTime: "", checkoutTime: "",
               totalPrice: 0,
               roomId: 0,
-              numOfpeople: 0,
+              numOfroom: 0,
               figURL: "",
               commentWrited: false,
             }
@@ -523,7 +519,7 @@ export default {
               item.checkoutTime = res.data[i].endTime
               item.totalPrice = res.data[i].amount
               item.roomId = res.data[i].roomId
-              item.numOfpeople = res.data[i].number
+              item.numOfroom = res.data[i].number
               item.commentWrited = res.data[i].has_comment
 
               this.orders.push(item)

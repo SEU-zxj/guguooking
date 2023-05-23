@@ -390,6 +390,7 @@ export default ({
             console.log("订单创建时间 = " + _this.gettime)
             return _this.gettime
         }
+        /* 获取用户选择的时间 */
         function getCurrentSelectTime(selectTime){
             let time = "12:00:00"
             if(orderForm.arriveTime === "" || orderForm.arriveTime === "不确定"){
@@ -414,7 +415,7 @@ export default ({
                                     hotelId: store.state.searchHotelId,
                                     roomId: store.state.bookRoomInfo[i].roomId,
                                     creationTime: getCreationTime(),
-                                    amount: store.state.bookRoomInfo[i].roomPrice * store.state.bookRoomInfo[i].roomNumber,
+                                    amount: store.state.bookRoomInfo[i].roomPrice * store.state.bookRoomInfo[i].roomNumber,//该种房间总价
                                     number: store.state.bookRoomInfo[i].roomNumber,
                                     startTime: getCurrentSelectTime(store.state.CurrentSelectTime)[0],
                                     endTime: getCurrentSelectTime(store.state.CurrentSelectTime)[1],
@@ -427,7 +428,7 @@ export default ({
                         ).then(
                             (res) => {
                                 console.log(res)
-                                if(res.data.resultOrder){
+                                if(res.data.code === "0"){
                                     console.log("电话号码：" + orderForm.phoneNumber)
                                     console.log("邮箱地址：" + orderForm.userEmail)
                                     console.log("到店时间：" + orderForm.arriveTime)
