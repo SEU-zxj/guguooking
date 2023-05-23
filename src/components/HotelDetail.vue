@@ -12,12 +12,12 @@
       height="50vh"
     >
       <el-carousel-item
-        v-for="item in detailInfo.data.figURLs.length"
+        v-for="item in detailInfo.data.pictures.length"
         :key="item"
         style="width: 100%; height: 100%"
       >
         <el-image
-          :src="detailInfo.data.figURLs[item - 1]"
+          :src="detailInfo.data.pictures[item - 1]"
           style="width: 100%; height: 100%"
           :fit="imgFitContain"
         ></el-image>
@@ -31,8 +31,8 @@
   </div>
 
   <div class="descriptionBox">
-    <h2>体验{{ detailInfo.data.hotelName }}的优质服务，在这里你就是明星！</h2>
-    <el-text class="introBox">{{ detailInfo.data.intro }}</el-text>
+    <h2>体验{{ detailInfo.data.name }}的优质服务，在这里你就是明星！</h2>
+    <el-text class="introBox">{{ detailInfo.data.introduction }}</el-text>
   </div>
 
   <div class="roomTableBox">
@@ -139,9 +139,11 @@ export default {
   setup() {
     const detailInfo = reactive({
       data: {
-        hotelName: "东南大学九龙湖宾馆",
-        hotelLocation: "中国 江苏 南京 江宁区",
-        figURLs: [
+        id: 1,
+        name: "东南大学九龙湖宾馆",
+        hotelLocation: "中国 江苏 南京",
+        address: "鼓楼区",
+        pictures: [
           "https://ac-a.static.booking.cn/xdata/images/hotel/max1024x768/444104546.jpg?k=7aacd3c9d43500ea5850329bff0849e99d8345b6377dfbbb17b11e8d9ef63a49&o=&hp=1",
           "https://ac-a.static.booking.cn/xdata/images/hotel/max1024x768/444104512.jpg?k=db3fda47203f7145d41c62b137ac3784ae986d5c332cbae9f0a3818b6ca6408a&o=&hp=1",
           "https://ac-a.static.booking.cn/xdata/images/hotel/max1024x768/444104516.jpg?k=5d0b464765591fa2719d3184efa74918c628ff0253e2bdd1e171cfd69c754a94&o=&hp=1",
@@ -152,24 +154,12 @@ export default {
           "https://ac-a.static.booking.cn/xdata/images/hotel/max1024x768/444104531.jpg?k=127aec2f1298216f95f4db52acda312fbbbf521d32c5fa74dab9b69daf28ba47&o=&hp=1",
           "https://ac-a.static.booking.cn/xdata/images/hotel/max1024x768/444104532.jpg?k=bab8a156d965b0524bfcb05c8f6cdcb83fe3546a65fd4a01fdea9be482e49168&o=&hp=1",
         ],
-        intro:
+        introduction:
           "Paris j'Adore Hotel & Spa坐落于巴黎，提供带餐厅和酒吧的尊贵型住宿。这家尊贵型酒店配备露台，提供带免费WiFi和私人浴室的空调客房。住宿为客人配备客房服务、礼宾服务和行李寄存服务。这家酒店的每间客房都配备书桌。所有客房都提供咖啡机、电视和保险箱。部分客房还提供阳台；部分客房享有市景。Paris j'Adore Hotel & Spa的房间均配备免费洗浴用品和iPad。这家住宿每天早晨提供单点和欧陆式早餐两种选择。24小时前台工作人员会讲英语、西班牙语、法语和葡萄牙语，很乐意为客人提供当地的实用信息。Paris j'Adore Hotel & Spa附近的热门地标包括Gare Saint-Lazare、卡尼尔歌剧院和皮嘉尔地铁站。最近的机场是巴黎戴高乐机场，距离这家酒店有24公里。根据我们网站上的真实住客点评，这里是巴黎的人气地区之一。夫妻/情侣特别喜欢这家住宿的位置，为两人住宿体验给出了8.9分。",
-        characteristics: [
-          true,
-          true,
-          true,
-          true,
-          true,
-          true,
-          true,
-          true,
-          true,
-          true,
-          true,
-          true,
-        ],
+        label: "1-1-1-1-1-1-1-1-1-1-1-0",
       },
     });
+
     const commentInfo = reactive({
       data: {
         avgScore: 8.7,
@@ -266,31 +256,73 @@ export default {
     const searchPeopleNumber = ref(1);
     //************************************************//
     //进行数据请求
+    console.log(store.state.searchHotelId);
+
+    //一共需要进行三次查询
+    //首先查询酒店的详细信息
+    //再查询酒店的空房情况
+    //最后查询酒店的评论信息
     http
-      .post(store.state.serverAddr + "/hotelDetail", {
-        hotelId: store.state.searchHotelId,
+      .get(store.state.serverAddr2 + "/getInformation", {
+        params: { hotelId: store.state.searchHotelId },
+        headers: { token: store.state.userToken },
       })
       .then(
         (res) => {
           console.log(res);
-          detailInfo.data = res.data.detailInfo;
-          emptyRoomData.data = res.data.emptyRoomInfo;
-          commentInfo.data = res.data.commentInfo;
-          bookRoomCount.data = [];
-          //根据返回的空房数量初始化记录预定房间数量的数组
-          for (var i = 0; i < res.data.emptyRoomInfo.length; i++) {
-            bookRoomCount.data.push({
-              roomId: res.data.emptyRoomInfo[i].roomId,
-              roomName: res.data.emptyRoomInfo[i].roomName,
-              roomPrice: res.data.emptyRoomInfo[i].roomPrice,
-              roomNumber: 0,
-            });
-          }
+          detailInfo.data = res.data;
+          // emptyRoomData.data = res.data.emptyRoomInfo;
+          // commentInfo.data = res.data.commentInfo;
+          // bookRoomCount.data = [];
+          // //根据返回的空房数量初始化记录预定房间数量的数组
+          // for (var i = 0; i < res.data.emptyRoomInfo.length; i++) {
+          //   bookRoomCount.data.push({
+          //     roomId: res.data.emptyRoomInfo[i].roomId,
+          //     roomName: res.data.emptyRoomInfo[i].roomName,
+          //     roomPrice: res.data.emptyRoomInfo[i].roomPrice,
+          //     roomNumber: 0,
+          //   });
+          // }
         },
         (err) => {
           console.log(err);
         }
       );
+
+    //查询空房情况，如果对应的全局时间段无效，默认查询今天到明天
+    //如果全局参数人数无效，默认查询1个人
+    //酒店号为全局区
+    const currentDate = new Date(Date.now());
+
+    function formatDate(date, format) {
+      var fmonth = date.getMonth() + 1;
+      if (fmonth < 10) {
+        fmonth = "0" + fmonth;
+      }
+      return format
+        .replace("mm", fmonth)
+        .replace("yyyy", date.getFullYear())
+        .replace("dd", date.getDate());
+    }
+    console.log(
+      dateDifference(
+        formatDate(currentDate, "yyyy-mm-dd"),
+        store.state.searchCheckinTime
+      )
+    );
+
+    //     {
+    //       hotelId: store.state.searchHotelId,
+    //       startTime: store.state.searchCheckinTime === undefined ? 0 : dateDifference(
+    //   formatDate(currentDate, "yyyy-mm-dd"),
+    //   store.state.searchCheckinTime
+    // ),
+    // endTime: store.state.searchCheckoutTime === undefined ? 0 : dateDifference(
+    //   formatDate(currentDate, "yyyy-mm-dd"),
+    //   store.state.searchCheckoutTime
+    // ),
+    // number: store.state.searchPeopleNumber === undefined ? 1 : store.state.searchPeopleNumber
+    //     }
 
     function HandleClick() {
       console.log(activeTag);
@@ -324,12 +356,16 @@ export default {
 
     let activeTag = computed(() => {
       var showTag = [];
-      for (var i = 0; i < detailInfo.data.characteristics.length; i++) {
-        if (detailInfo.data.characteristics[i]) showTag.push(tagIndex[i]);
+      var tags = [];
+      for (var i = 0; i < detailInfo.data.label.length; i += 2) {
+        tags.push(detailInfo.data.label[i]);
+      }
+
+      for (var i = 0; i < tags.length; i++) {
+        if (tags[i] === "1") showTag.push(tagIndex[i]);
       }
       return showTag;
     });
-
     function SearchNewEmptyRoom() {
       var send_checkinTime = "0000-00-00";
       var send_checkoutTime = "9999-01-01";
@@ -366,6 +402,18 @@ export default {
           }
         );
     }
+
+    //计算两个日期之间的天数
+    function dateDifference(sDate1, sDate2) {
+      //sDate1和sDate2是2006-12-18格式
+      let dateSpan, iDays;
+      sDate1 = Date.parse(sDate1);
+      sDate2 = Date.parse(sDate2);
+      dateSpan = sDate2 - sDate1;
+      dateSpan = Math.abs(dateSpan);
+      iDays = Math.floor(dateSpan / (24 * 3600 * 1000));
+      return iDays;
+    }
     return {
       detailInfo,
       imgFitContain,
@@ -380,6 +428,8 @@ export default {
       emptyRoomData,
       BookRoomNow,
       SearchNewEmptyRoom,
+      dateDifference,
+      formatDate,
     };
   },
   mounted() {},
