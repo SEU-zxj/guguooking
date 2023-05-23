@@ -96,12 +96,12 @@
       >
         <template #header>
           <div class="card-header">
-            <span>{{ commentInfo.data.commentList[o - 1].userName }}</span>
-            <el-tag>{{ commentInfo.data.commentList[o - 1].userScore }}</el-tag>
+            <span>{{ commentInfo.data.commentList[o - 1].phone }}</span>
+            <el-tag>{{ commentInfo.data.commentList[o - 1].level }}</el-tag>
           </div>
         </template>
         <div class="text item">
-          {{ commentInfo.data.commentList[o - 1].commentText }}
+          {{ commentInfo.data.commentList[o - 1].comment }}
         </div>
       </el-card>
     </div>
@@ -166,21 +166,21 @@ export default {
         commentNumber: 2977,
         commentList: [
           {
-            userName: "Alice",
-            userScore: 8.8,
-            commentText:
+            phone: "0000000000",
+            level: 8.8,
+            comment:
               "这家店真是棒极了😍是我去过的最棒的酒店。👍👍👍强烈推荐大家到他们家住宿。🎉包你满意，不满意我V你50！",
           },
           {
-            userName: "Mike",
-            userScore: 8.9,
-            commentText:
+            phone: "1111111",
+            level: 8.8,
+            comment:
               "这家店真是棒极了😍是我去过的最棒的酒店。👍👍👍强烈推荐大家到他们家住宿。🎉包你满意，不满意我V你50！",
           },
           {
-            userName: "Flord",
-            userScore: 9.0,
-            commentText:
+            phone: "2222222",
+            level: 8.8,
+            comment:
               "这家店真是棒极了😍是我去过的最棒的酒店。👍👍👍强烈推荐大家到他们家住宿。🎉包你满意，不满意我V你50！",
           },
         ],
@@ -264,6 +264,8 @@ export default {
     //首先查询酒店的详细信息
     //再查询酒店的空房情况
     //最后查询酒店的评论信息
+
+    //*****查询酒店的详细信息*******//
     http
       .get(store.state.serverAddr2 + "/getInformation", {
         params: { hotelId: store.state.searchHotelId },
@@ -271,21 +273,10 @@ export default {
       })
       .then(
         (res) => {
+          console.log(res);
           console.log(res.data[0].pictures);
           res.data[0].pictures = res.data[0].pictures.split(";");
           detailInfo.data = res.data[0];
-          // emptyRoomData.data = res.data.emptyRoomInfo;
-          // commentInfo.data = res.data.commentInfo;
-          // bookRoomCount.data = [];
-          // //根据返回的空房数量初始化记录预定房间数量的数组
-          // for (var i = 0; i < res.data.emptyRoomInfo.length; i++) {
-          //   bookRoomCount.data.push({
-          //     roomId: res.data.emptyRoomInfo[i].roomId,
-          //     roomName: res.data.emptyRoomInfo[i].roomName,
-          //     roomPrice: res.data.emptyRoomInfo[i].roomPrice,
-          //     roomNumber: 0,
-          //   });
-          // }
         },
         (err) => {
           console.log(err);
@@ -368,6 +359,38 @@ export default {
               roomNumber: 0,
             });
           }
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+
+    //***查询酒店的评论信息****//
+    http
+      .get(store.state.serverAddr2 + "/commentAverage", {
+        params: { hotelId: store.state.searchHotelId },
+        headers: { token: store.state.userToken },
+      })
+      .then(
+        (res) => {
+          res.data.data = res.data.data.split(" ");
+          commentInfo.data.commentNumber = parseInt(res.data.data[0]);
+          commentInfo.data.avgScore = parseFloat(res.data.data[1]);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+
+    http
+      .get(store.state.serverAddr2 + "/commentGet", {
+        params: { hotelId: store.state.searchHotelId },
+        headers: { token: store.state.userToken },
+      })
+      .then(
+        (res) => {
+          console.log(res);
+          commentInfo.data.commentList = res.data;
         },
         (err) => {
           console.log(err);
