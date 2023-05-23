@@ -103,7 +103,7 @@
                     <el-card class="main-card" shadow="never">
                         <el-row :gutter="10">
                             <el-col :span="6">
-                                <el-image style="width: 160px;vertical-align: middle;" src="https://youimg1.c-ctrip.com/target/100o0x000000l33nt6FCA.jpg"/>
+                                <el-image style="width: 160px;vertical-align: middle;" :src = "order.figURL"/>
                             </el-col>
                             <el-col :span="18">
                                 <el-text tag="b" style="font-size: large;color: black;">{{ order.hotelName }}</el-text>
@@ -379,16 +379,15 @@ export default ({
         /* 获取当前时间 */
         const getCreationTime = () =>{
             //获取当前时间并打印
-            var _this = this;
             let yy = new Date().getFullYear();
             let mm = new Date().getMonth() + 1;
             let dd = new Date().getDate();
             let hh = new Date().getHours();
             let mf = new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes();
             let ss = new Date().getSeconds() < 10 ? '0' + new Date().getSeconds() : new Date().getSeconds();
-            _this.gettime = yy + '/' + mm + '/' + dd + ' ' + hh + ':' + mf + ':' + ss;
-            console.log("订单创建时间 = " + _this.gettime)
-            return _this.gettime
+            var gettime = yy + '-' + mm + '-' + dd + ' ' + hh + ':' + mf + ':' + ss;
+            console.log("订单创建时间 = " + gettime)
+            return gettime
         }
         /* 获取用户选择的时间 */
         function getCurrentSelectTime(selectTime){
@@ -396,7 +395,8 @@ export default ({
             if(orderForm.arriveTime === "" || orderForm.arriveTime === "不确定"){
                 time = "12:00:00"
             }else{
-                time = orderForm.arriveTime.slice(0,2) + ":00:00"
+                console.log(orderForm.arriveTime)
+                // time = orderForm.arriveTime.slice(0,2) + ":00:00"
             }
 
             let startTime = selectTime[0] + " " + time
@@ -405,64 +405,64 @@ export default ({
         }
         const confirmOrder = () =>{
             ruleForms.value.validate((valid) => {
-                if (valid) {
+                if (valid) {//通过表单验证
                     console.log("通过");
                     //触发成功验证表单，调用接口
                     for(let i in store.state.bookRoomInfo){
-                        http.post(
-                            store.state.serverAddr + "/orderSubmit",
-                            {
-                                hotelId: store.state.searchHotelId,
-                                roomId: store.state.bookRoomInfo[i].roomId,
-                                creationTime: getCreationTime(),
-                                amount: store.state.bookRoomInfo[i].roomPrice * store.state.bookRoomInfo[i].roomNumber,//该种房间总价
-                                number: store.state.bookRoomInfo[i].roomNumber,
-                                startTime: getCurrentSelectTime(store.state.CurrentSelectTime)[0],
-                                endTime: getCurrentSelectTime(store.state.CurrentSelectTime)[1],
-                                email: orderForm.userEmail,
-                                specialAsk: orderForm.otherNeed,
-                            },
-                            {
-                                headers: { token: store.state.userToken }
-                            }
-                        ).then(
-                            (res) => {
-                                console.log(res)
-                                if(res.data.code === "0"){
-                                    console.log("电话号码：" + orderForm.phoneNumber)
-                                    console.log("邮箱地址：" + orderForm.userEmail)
-                                    console.log("到店时间：" + orderForm.arriveTime)
-                                    console.log("其他要求：" + orderForm.otherNeed)
+                        if(store.state.bookRoomInfo[i].roomNumber>0){
+                            http.post(
+                                store.state.serverAddr2 + "/orderGenerate",
+                                {
+                                    hotelId: store.state.searchHotelId,
+                                    roomId: store.state.bookRoomInfo[i].roomId,
+                                    creationTime: getCreationTime(),
+                                    amount: store.state.bookRoomInfo[i].roomPrice * store.state.bookRoomInfo[i].roomNumber,//该种房间总价
+                                    number: store.state.bookRoomInfo[i].roomNumber,
+                                    startTime: getCurrentSelectTime(store.state.CurrentSelectTime).startTime,
+                                    endTime: getCurrentSelectTime(store.state.CurrentSelectTime).endTime,
+                                    email: orderForm.userEmail,
+                                    specialAsk: orderForm.otherNeed,
+                                },
+                                {
+                                    headers: { token: store.state.userToken }
+                                }
+                            ).then(
+                                (res) => {
+                                    console.log(res)
+                                    if(res.data.code === "0"){
+                                        console.log("电话号码：" + orderForm.phoneNumber)
+                                        console.log("邮箱地址：" + orderForm.userEmail)
+                                        console.log("到店时间：" + orderForm.arriveTime)
+                                        console.log("其他要求：" + orderForm.otherNeed)
 
+                                        ElMessage({
+                                            showClose: true,
+                                            type: "success",
+                                            message: "行程预定成功！",
+                                        });
+
+                                        /* 跳转到查看订单页面 */
+                                        router.push("/CheckOrder")
+                                    }else{
+                                        ElMessage({
+                                            showClose: true,
+                                            type: "error",
+                                            message: "行程预定失败",
+                                        });
+                                    }
+                                },
+                                (err) => {
+                                    console.log(err)
                                     ElMessage({
                                         showClose: true,
-                                        type: "success",
-                                        message: "行程预定成功！",
-                                    });
-
-                                    /* 跳转到查看订单页面 */
-                                    router.push("/CheckOrder")
-                                }else{
-                                    ElMessage({
-                                        showClose: true,
+                                        message: "出错了，请联系管理员处理（提交订单）",
                                         type: "error",
-                                        message: "行程预定失败",
                                     });
                                 }
-                            },
-                            (err) => {
-                                console.log(err)
-                                ElMessage({
-                                    showClose: true,
-                                    message: "出错了，请联系管理员处理（提交订单）",
-                                    type: "error",
-                                });
-                            }
-                        )
+                            )
+                        }
                     }
-                    
-
-                } else {
+                } else {//未通过表单验证
                     console.log("未通过");
                     ElMessage({
                         showClose: true,

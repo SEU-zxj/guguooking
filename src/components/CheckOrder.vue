@@ -3,7 +3,7 @@
     <el-container>
       <el-main class="ordermain">
         <!-- 没有账单时 -->
-        <div v-if="orders.length == 0" style="margin-top: 7%">
+        <div v-if="orders.length === 0" style="margin-top: 7%">
           <el-empty
             description=" "
             :image="require('@/assets/orderEmpty.png')"
@@ -383,6 +383,9 @@ export default {
             message: "取消删除",
           });
         });
+
+        console.log("用户订单：")
+        console.log(orders)
     };
     //将yyyy-mm-dd格式的时间转化为数字
     const time2time = (timeStr) => {
@@ -527,20 +530,24 @@ export default {
               this.orders.push(item)
             }
 
-            for(let i in this.orders){
+            console.log("订单数量=" + this.numOfOrder)
+            for(let i = 0; i < this.numOfOrder; i++){
+              console.log("订单-酒店" + i)
               http.get(store.state.serverAddr2 + "/getInformation",{
                 params: {
-                  hotelId: this.orders[i].hotelId,
+                  hotelId: res.data[i].hotelId,
                 },
                 headers: { token: store.state.userToken }
               }).then(
                 (res) => {
-                  console.log("订单-酒店" + i)
+                  console.log(" 订单-酒店" + i)
                   console.log(res)
 
                   this.orders[i].hotelName = res.data[0].name
                   this.orders[i].hotelLocation = res.data[0].location + " " + res.data[0].address
                   this.orders[i].figURL = res.data[0].pictures[0]
+
+                  console.log(this.orders[i])
                 },
                 (err) => {
                   console.log(err);
@@ -549,9 +556,12 @@ export default {
             }
           },
           (err) => {
+            console.log("查看订单出错了!")
             console.log(err);
           }
         )
+    console.log("用户订单：")
+    console.log(this.orders)
   },
 
     
