@@ -1,7 +1,7 @@
 <template>
   <div class="HotelDetailHeader">
-    <h1>{{ detailInfo.data.hotelName }}</h1>
-    <p>{{ detailInfo.data.hotelLocation }}</p>
+    <h1>{{ detailInfo.data.name }}</h1>
+    <p>{{ detailInfo.data.location }} | {{ detailInfo.data.address }}</p>
   </div>
   <el-button @click="HandleClick"></el-button>
   <div class="ImageWallBox">
@@ -63,16 +63,16 @@
       </div>
     </div>
     <el-table :data="emptyRoomData.data" border style="width: 100%">
-      <el-table-column prop="roomName" label="房间类型" width="180" />
-      <el-table-column prop="roomBriefIntro" label="简介" width="180" />
-      <el-table-column prop="roomDetail" label="详细信息" />
-      <el-table-column prop="roomPrice" label="价格" />
+      <el-table-column prop="roomType" label="房间类型" width="180" />
+      <el-table-column prop="bedType" label="简介" width="180" />
+      <el-table-column prop="number" label="可住人数" />
+      <el-table-column prop="price" label="价格" />
       <el-table-column label="预定" width="200">
         <template #default="scope">
           <el-input-number
             v-model="bookRoomCount.data[scope.$index].roomNumber"
             :min="0"
-            :max="scope.row.availableMax"
+            :max="scope.row.available"
           />
         </template>
       </el-table-column>
@@ -141,7 +141,7 @@ export default {
       data: {
         id: 1,
         name: "东南大学九龙湖宾馆",
-        hotelLocation: "中国 江苏 南京",
+        location: "中国 江苏 南京",
         address: "鼓楼区",
         pictures: [
           "https://ac-a.static.booking.cn/xdata/images/hotel/max1024x768/444104546.jpg?k=7aacd3c9d43500ea5850329bff0849e99d8345b6377dfbbb17b11e8d9ef63a49&o=&hp=1",
@@ -204,50 +204,50 @@ export default {
     const emptyRoomData = reactive({
       data: [
         {
-          roomId: 1,
-          roomName: "标间",
-          roomBriefIntro: "我是标间",
-          roomDetail: ["提前付费", "无法退款。"],
-          roomPrice: 900,
-          availableMax: 5,
+          id: 1,
+          roomType: "双人间",
+          bedType: "标间",
+          number: 2,
+          price: 400,
+          available: 2,
         },
         {
-          roomId: 2,
-          roomName: "双人间",
-          roomBriefIntro: "我是双人间",
-          roomDetail: ["提前付费", "无法退款。"],
-          roomPrice: 900,
-          availableMax: 10,
+          id: 2,
+          roomType: "单人间",
+          bedType: "标间",
+          number: 1,
+          price: 200,
+          available: 2,
         },
         {
-          roomId: 3,
-          roomName: "大床间",
-          roomBriefIntro: "我是大床房",
-          roomDetail: ["提前付费", "无法退款。"],
-          roomPrice: 900,
-          availableMax: 15,
+          id: 3,
+          roomType: "三人间",
+          bedType: "三张床",
+          number: 3,
+          price: 600,
+          available: 9,
         },
       ],
     });
     const bookRoomCount = reactive({
       data: [
         {
-          roomId: 100,
-          roomName: "",
+          id: 100,
+          roomType: "",
           roomNumber: 0,
-          roomPrice: 0,
+          price: 0,
         },
         {
-          roomId: 100,
-          roomName: "",
+          id: 100,
+          roomType: "",
           roomNumber: 0,
-          roomPrice: 0,
+          price: 0,
         },
         {
-          roomId: 100,
-          roomName: "",
+          id: 100,
+          roomType: "",
           roomNumber: 0,
-          roomPrice: 0,
+          price: 0,
         },
       ],
     });
@@ -255,6 +255,8 @@ export default {
     const searchTime = ref([]);
     const searchPeopleNumber = ref(1);
     //************************************************//
+    searchTime.value[0] = store.state.searchCheckinTime;
+    searchTime.value[1] = store.state.searchCheckoutTime;
     //进行数据请求
     console.log(store.state.searchHotelId);
 
@@ -269,8 +271,9 @@ export default {
       })
       .then(
         (res) => {
-          console.log(res);
-          detailInfo.data = res.data;
+          console.log(res.data[0].pictures);
+          res.data[0].pictures = res.data[0].pictures.split(";");
+          detailInfo.data = res.data[0];
           // emptyRoomData.data = res.data.emptyRoomInfo;
           // commentInfo.data = res.data.commentInfo;
           // bookRoomCount.data = [];
@@ -304,25 +307,72 @@ export default {
         .replace("yyyy", date.getFullYear())
         .replace("dd", date.getDate());
     }
-    console.log(
-      dateDifference(
-        formatDate(currentDate, "yyyy-mm-dd"),
-        store.state.searchCheckinTime
-      )
-    );
+    //请求该酒店对应时间内所有的空房情况
+    http
+      .get(store.state.serverAddr2 + "/localsearch", {
+        params: {
+          hotelId: store.state.searchHotelId,
+          startTime:
+            store.state.searchCheckinTime === undefined
+              ? 0
+              : dateDifference(
+                  formatDate(currentDate, "yyyy-mm-dd"),
+                  store.state.searchCheckinTime
+                ),
+          endTime:
+            store.state.searchCheckoutTime === undefined
+              ? 0
+              : dateDifference(
+                  formatDate(currentDate, "yyyy-mm-dd"),
+                  store.state.searchCheckoutTime
+                ),
+          number:
+            store.state.searchPeopleNumber === undefined
+              ? 1
+              : store.state.searchPeopleNumber,
+        },
+        headers: {
+          token: store.state.userToken,
+        },
+      })
+      .then(
+        (res) => {
+          //查询用户预定的入住时间和离店时间之间的天数
+          var period = dateDifference(
+            store.state.searchCheckinTime,
+            store.state.searchCheckoutTime
+          );
+          console.log("period=" + period);
+          for (var i = 0; i < res.data.length; i++) {
+            res.data[i].available = res.data[i].available.split("-");
+            var minTemp = 1e9;
+            if (res.data[i].available.length < period)
+              period = res.data[i].available.length;
+            console.log(res.data[i].available);
+            console.log("period=" + period);
+            for (var j = 0; j <= period; j++) {
+              res.data[i].available[j] = parseInt(res.data[i].available[j]);
+              minTemp = Math.min(minTemp, res.data[i].available[j]);
+            }
+            res.data[i].available = minTemp;
+          }
+          emptyRoomData.data = res.data;
 
-    //     {
-    //       hotelId: store.state.searchHotelId,
-    //       startTime: store.state.searchCheckinTime === undefined ? 0 : dateDifference(
-    //   formatDate(currentDate, "yyyy-mm-dd"),
-    //   store.state.searchCheckinTime
-    // ),
-    // endTime: store.state.searchCheckoutTime === undefined ? 0 : dateDifference(
-    //   formatDate(currentDate, "yyyy-mm-dd"),
-    //   store.state.searchCheckoutTime
-    // ),
-    // number: store.state.searchPeopleNumber === undefined ? 1 : store.state.searchPeopleNumber
-    //     }
+          bookRoomCount.data = [];
+          //根据返回的空房数量初始化记录预定房间数量的数组
+          for (var i = 0; i < res.data.length; i++) {
+            bookRoomCount.data.push({
+              roomId: res.data[i].id,
+              roomName: res.data[i].roomType + res.data[i].bedType,
+              roomPrice: res.data[i].price,
+              roomNumber: 0,
+            });
+          }
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
 
     function HandleClick() {
       console.log(activeTag);
@@ -331,9 +381,9 @@ export default {
     function BookRoomNow() {
       /*****************************************************/
       store.state.totalPrice = 0;
-      store.state.CurrentHotelName = detailInfo.data.hotelName;
-      store.state.CurrentHotelLocation = detailInfo.data.hotelLocation;
-      store.state.CurrentHotelFigURL = detailInfo.data.figURLs[0];
+      store.state.CurrentHotelName = detailInfo.data.name;
+      store.state.CurrentHotelLocation = detailInfo.data.location;
+      store.state.CurrentHotelFigURL = detailInfo.data.pictures[0];
       store.state.bookRoomInfo = bookRoomCount.data;
       store.state.CurrentSelectTime = searchTime.value;
       //根据bookRoomCount中的数据，进行提交，跳转到订单页面
@@ -343,13 +393,13 @@ export default {
           bookRoomCount.data[i].roomPrice * bookRoomCount.data[i].roomNumber;
         count += bookRoomCount.data[i].roomNumber;
       }
-      console.log(searchTime.value.length);
       if (count === 0 || searchTime.value.length === 0) {
         ElMessage({
           message: "请确保至少选择一个房间或者日期进行预定",
           type: "warning",
         });
       } else {
+        console.log(store.state.totalPrice);
         router.push("/HotelOrder");
       }
     }
