@@ -273,11 +273,10 @@ export default {
       })
       .then(
         (res) => {
-          res.data[0].pictures = res.data[0].pictures.split(";");
-          detailInfo.data = res.data[0];
-          console.log("图片");
           console.log(res);
           console.log(res.data[0].pictures);
+          res.data[0].pictures = res.data[0].pictures.split(";");
+          detailInfo.data = res.data[0];
         },
         (err) => {
           console.log(err);
@@ -313,7 +312,7 @@ export default {
                 ),
           endTime:
             store.state.searchCheckoutTime === undefined
-              ? 1
+              ? 0
               : dateDifference(
                   formatDate(currentDate, "yyyy-mm-dd"),
                   store.state.searchCheckoutTime
@@ -334,10 +333,6 @@ export default {
             store.state.searchCheckinTime,
             store.state.searchCheckoutTime
           );
-          var startDate = dateDifference(
-            formatDate(currentDate, "yyyy-mm-dd"),
-            store.state.searchCheckinTime
-          );
           console.log("period=" + period);
           for (var i = 0; i < res.data.length; i++) {
             res.data[i].available = res.data[i].available.split("-");
@@ -346,8 +341,7 @@ export default {
               period = res.data[i].available.length;
             console.log(res.data[i].available);
             console.log("period=" + period);
-
-            for (var j = startDate; j <= startDate + period; j++) {
+            for (var j = 0; j <= period; j++) {
               res.data[i].available[j] = parseInt(res.data[i].available[j]);
               minTemp = Math.min(minTemp, res.data[i].available[j]);
             }
@@ -446,73 +440,35 @@ export default {
       return showTag;
     });
     function SearchNewEmptyRoom() {
-      if (searchTime.value === null || searchPeopleNumber === undefined) {
-        ElMessage({
-          message: "请确保所有条件都进行了选择",
-          type: "warning",
-        });
-        return;
-      }
+      var send_checkinTime = "0000-00-00";
+      var send_checkoutTime = "9999-01-01";
+      var send_roomCount = 0;
+      //根据给定的时间和人数数据重新进行空房搜索
+      if (searchTime.value[0] === undefined) {
+        send_checkinTime = store.state.searchCheckinTime;
+        if (send_checkinTime === undefined) send_checkinTime = "0000-00-00";
+      } else send_checkinTime = searchTime.value[0];
 
-      store.state.searchCheckinTime = searchTime.value[0];
-      store.state.searchCheckoutTime = searchTime.value[1];
-      store.state.searchPeopleNumber = searchPeopleNumber.value;
+      if (searchTime.value[1] === undefined) {
+        send_checkoutTime = store.state.searchCheckoutTime;
+        if (send_checkoutTime === undefined) send_checkoutTime = "9999-01-01";
+      } else send_checkoutTime = searchTime.value[1];
+
+      if (searchPeopleNumber.value === undefined) send_roomCount = 1;
+      else send_roomCount = searchPeopleNumber.value;
 
       http
-        .get(store.state.serverAddr2 + "/localsearch", {
-          params: {
-            hotelId: store.state.searchHotelId,
-            startTime: dateDifference(
-              formatDate(currentDate, "yyyy-mm-dd"),
-              store.state.searchCheckinTime
-            ),
-            endTime: dateDifference(
-              formatDate(currentDate, "yyyy-mm-dd"),
-              store.state.searchCheckoutTime
-            ),
-            number: store.state.searchPeopleNumber,
+        .post(store.state.serverAddr + "/localSearch", {
+          selectTime: {
+            checkinTime: send_checkinTime,
+            checkoutTime: send_checkoutTime,
           },
-          headers: {
-            token: store.state.userToken,
-          },
+          roomCount: send_roomCount,
+          hotelId: store.state.searchHotelId,
         })
         .then(
           (res) => {
-            console.log(res);
-            //查询用户预定的入住时间和离店时间之间的天数
-            var period = dateDifference(
-              store.state.searchCheckinTime,
-              store.state.searchCheckoutTime
-            );
-            var startDate = dateDifference(
-              formatDate(currentDate, "yyyy-mm-dd"),
-              store.state.searchCheckinTime
-            );
-            console.log("period=" + period);
-            for (var i = 0; i < res.data.length; i++) {
-              res.data[i].available = res.data[i].available.split("-");
-              var minTemp = 1e9;
-              if (res.data[i].available.length < period)
-                period = res.data[i].available.length;
-
-              for (var j = startDate; j <= startDate + period; j++) {
-                res.data[i].available[j] = parseInt(res.data[i].available[j]);
-                minTemp = Math.min(minTemp, res.data[i].available[j]);
-              }
-              res.data[i].available = minTemp;
-            }
-            emptyRoomData.data = res.data;
-
-            bookRoomCount.data = [];
-            //根据返回的空房数量初始化记录预定房间数量的数组
-            for (var i = 0; i < res.data.length; i++) {
-              bookRoomCount.data.push({
-                roomId: res.data[i].id,
-                roomName: res.data[i].roomType + res.data[i].bedType,
-                roomPrice: res.data[i].price,
-                roomNumber: 0,
-              });
-            }
+            emptyRoomData.data = res.data.emptyRoomInfo;
           },
           (err) => {
             console.log(err);
