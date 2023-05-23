@@ -663,7 +663,6 @@ import http from "../src/plugins/axiosInstance";
 // import { useStore } from "vuex"; //1.从vuex中引入useStore
 import store from "@/store/index";
 import router from "@/router";
-import { stringify } from "querystring";
 
 export default {
   setup() {
@@ -722,8 +721,6 @@ export default {
         case 3:
           //改变登录状态判断
           store.state.isLogin = false;
-          //清除本地记录的token
-          // window.localStorage.setItem('userToken', '')
           //返回主页面
           router.push("/Main");
           break;
@@ -974,7 +971,7 @@ export default {
       console.log("关闭表单");
       dialogFormVisible_log.value = false;
     }
-    function Login() {}
+
     // function Register() {
     //   let that = this;
     //   console.log("Register");
@@ -1045,8 +1042,6 @@ export default {
       addFormConfirm,
       FormCancle,
       FormConfirm,
-      // Register,
-      Login,
       /* 跳转 */
       app2Main,
       app2CheckOrder,
