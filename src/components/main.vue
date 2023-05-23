@@ -290,58 +290,7 @@ export default {
         }
       );
     const location = ref([]);
-    const options = [
-      {
-        value: "中国",
-        label: "中国",
-        children: [
-          {
-            value: "江苏",
-            label: "江苏",
-            children: [
-              {
-                value: "南京",
-                label: "南京",
-              },
-            ],
-          },
-          {
-            value: "重庆",
-            label: "重庆",
-          },
-          {
-            value: "上海",
-            label: "上海",
-          },
-        ],
-      },
-      {
-        value: "美国",
-        label: "美国",
-        children: [
-          {
-            value: "纽约州",
-            label: "纽约州",
-            children: [
-              {
-                value: "纽约",
-                label: "纽约",
-              },
-            ],
-          },
-          {
-            value: "加利福尼亚",
-            label: "加利福尼亚",
-            children: [
-              {
-                value: "硅谷",
-                label: "硅谷",
-              },
-            ],
-          },
-        ],
-      },
-    ];
+    const options = store.state.options;
     const timeRange = ref([]);
     const imgFitCover = "cover";
     const peopleNum = ref();
@@ -403,9 +352,9 @@ export default {
       if (store.state.searchLocation === undefined)
         store.state.searchLocation = ["中国"];
       if (store.state.searchCheckinTime === undefined)
-        store.state.searchCheckinTime = "0000-00-00";
+        store.state.searchCheckinTime = 0;
       if (store.state.searchCheckoutTime === undefined)
-        store.state.searchCheckoutTime = "9999-99-99";
+        store.state.searchCheckoutTime = 2;
       if (store.state.searchPeopleNumber === undefined)
         store.state.searchPeopleNumber = 1;
 
@@ -455,17 +404,18 @@ export default {
       //index = 0 代表酒店
       //index = 1 代表公寓
       //index = 2 代表民宿
+
       store.state.searchHotelListType = "typeSearch";
-      if (index === 0) store.state.searchType = "hotel";
-      else if (index === 1) store.state.searchType = "apartment";
-      else store.state.searchType = "homestay";
+      if (index === 1) store.state.searchType = "酒店";
+      else if (index === 2) store.state.searchType = "公寓";
+      else store.state.searchType = "民宿";
 
       router.push("/HotelList");
     }
 
     function CheckPopularHotel(index) {
       //****************************************//
-      var checkID = popularHotels.data[index].hotelId;
+      var checkID = popularHotels.data[index].id;
       store.state.searchHotelId = checkID;
       //根据checkID查看酒店详情页面
       router.push("HotelDetail");

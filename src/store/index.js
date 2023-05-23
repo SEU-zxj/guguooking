@@ -30,14 +30,62 @@ export default createStore({
         CurrentSelectTime: [],
 
         bookRoomInfo: [],
-        //{
-        //   roomId: 100,
-        //   roomName: "",
-        //   roomNumber: 0,
-        //   roomPrice: 0,
-        // },
+        options : [
+            {
+              value: "中国",
+              label: "中国",
+              children: [
+                {
+                  value: "江苏",
+                  label: "江苏",
+                  children: [
+                    {
+                      value: "南京",
+                      label: "南京",
+                    },
+                  ],
+                },
+                {
+                  value: "重庆",
+                  label: "重庆",
+                },
+                {
+                  value: "上海",
+                  label: "上海",
+                },
+              ],
+            },
+            {
+              value: "美国",
+              label: "美国",
+              children: [
+                {
+                  value: "纽约州",
+                  label: "纽约州",
+                  children: [
+                    {
+                      value: "纽约",
+                      label: "纽约",
+                    },
+                  ],
+                },
+                {
+                  value: "加利福尼亚",
+                  label: "加利福尼亚",
+                  children: [
+                    {
+                      value: "硅谷",
+                      label: "硅谷",
+                    },
+                  ],
+                },
+              ],
+            },
+          ]
     },
-    mutations: {},
+    mutations: {
+
+    },
     actions: {},
     modules: {},
 })

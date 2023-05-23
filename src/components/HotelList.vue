@@ -49,7 +49,7 @@
             <el-row :gutter="20" style="height: 100%; width: 100%">
               <el-col :span="8">
                 <el-image
-                  :src="showList.data[o - 1].figURL"
+                  :src="showList.data[o - 1].pictures"
                   :fit="imgFitContain"
                   style="height: 100%; width: 100%"
                 >
@@ -57,14 +57,14 @@
               </el-col>
               <el-col :span="16">
                 <el-row style="width: 100%">
-                  <p class="HotelName">{{ showList.data[o - 1].hotelName }}</p>
-                  <p>{{ showList.data[o - 1].score }}分</p>
+                  <p class="HotelName">{{ showList.data[o - 1].name }}</p>
+                  <p>{{ showList.data[o - 1].level }}分</p>
                 </el-row>
                 <el-row style="width: 100%">
                   <el-text class="CommentExample" style="width: 60%" truncated
-                    >"{{ showList.data[o - 1].comment }}"</el-text
+                    >"{{ showList.data[o - 1].introduction }}"</el-text
                   >
-                  <p>{{ showList.data[o - 1].commentNumber }}条用户评论</p>
+                  <p>{{ showList.data[o - 1].location }}</p>
                 </el-row>
                 <el-row style="width: 100%">
                   <el-text class="HotelPrice"
@@ -74,7 +74,7 @@
                 <el-row style="width: 100%">
                   <el-button
                     style="margin-left: 80%"
-                    @click="BookHotel(showList.data[o - 1].hotelId)"
+                    @click="BookHotel(showList.data[o - 1].id)"
                     >立即预定！</el-button
                   >
                 </el-row>
@@ -120,76 +120,44 @@ export default {
       roomNumber: 1,
     });
     const imgFitContain = "contain";
-    const options = [
-      {
-        value: "中国",
-        label: "中国",
-        children: [
-          {
-            value: "江苏",
-            label: "江苏",
-            children: [
-              {
-                value: "南京",
-                label: "南京",
-              },
-            ],
-          },
-          {
-            value: "重庆",
-            label: "重庆",
-          },
-          {
-            value: "上海",
-            label: "上海",
-          },
-        ],
-      },
-      {
-        value: "美国",
-        label: "美国",
-        children: [
-          {
-            value: "纽约州",
-            label: "纽约州",
-            children: [
-              {
-                value: "纽约",
-                label: "纽约",
-              },
-            ],
-          },
-          {
-            value: "加利福尼亚",
-            label: "加利福尼亚",
-            children: [
-              {
-                value: "硅谷",
-                label: "硅谷",
-              },
-            ],
-          },
-        ],
-      },
-    ];
+    const options = store.state.options;
 
     const showList = reactive({
       data: [
         {
-          hotelId: 1,
-          hotelName: "东南大学九龙湖宾馆",
-          score: 22,
-          briefIntro: "很好的酒店",
-          comment: "我是评论案例",
-          commentNumber: 9999,
+          id: 1,
+          name: "东南大学九龙湖宾馆",
+          address: "江宁区",
+          level: 2,
+          introduction: "很好的酒店",
           price: 999.99,
-          figURL:
+          pictures:
             "https://www.topbots.com/wp-content/uploads/2017/04/booking_800x350_web.png",
         },
       ],
     });
     //根据跳转到这个界面的类型进行接口的渲染
     var send_location = "";
+
+    //获取当前日期
+    const currentDate = new Date(Date.now());
+
+    function formatDate(date, format) {
+      var fmonth = date.getMonth() + 1;
+      if (fmonth < 10) {
+        fmonth = "0" + fmonth;
+      }
+      return format
+        .replace("mm", fmonth)
+        .replace("yyyy", date.getFullYear())
+        .replace("dd", date.getDate());
+    }
+    console.log(
+      dateDifference(
+        formatDate(currentDate, "yyyy-mm-dd"),
+        store.state.searchCheckinTime
+      )
+    );
     if (store.state.searchHotelListType === "fullSearch") {
       var len = store.state.searchLocation.length;
       for (var i = 0; i < len - 1; i++) {
@@ -199,17 +167,28 @@ export default {
       send_location +=
         store.state.searchLocation[store.state.searchLocation.length - 1];
       http
-        .post(store.state.serverAddr + "/fullSearch", {
-          location: send_location,
-          selectTime: {
-            checkinTime: store.state.searchCheckinTime,
-            checkoutTime: store.state.searchCheckoutTime,
+        .get(store.state.serverAddr2 + "/fullSearch", {
+          params: {
+            location: send_location,
+            startTime: dateDifference(
+              formatDate(currentDate, "yyyy-mm-dd"),
+              store.state.searchCheckinTime
+            ),
+            endTime: dateDifference(
+              formatDate(currentDate, "yyyy-mm-dd"),
+              store.state.searchCheckoutTime
+            ),
+            number: store.state.searchPeopleNumber,
           },
-          roomCount: store.state.searchPeopleNumber,
+          headers: { token: store.state.userToken },
         })
         .then(
           (res) => {
-            showList.data = res.data.hotelList;
+            // showList.data = res.data.hotelList;
+            for (var i = 0; i < res.data.length; i++) {
+              res.data[i].pictures = res.data[i].pictures.split(";")[0];
+            }
+            showList.data = res.data;
           },
           (err) => {
             console.log(err);
@@ -217,17 +196,26 @@ export default {
         );
     } else if (store.state.searchHotelListType === "countrySearch") {
       http
-        .post(store.state.serverAddr + "/fullSearch", {
-          location: store.state.searchLocation[0],
-          selectTime: {
-            checkinTime: "0000-00-00",
-            checkoutTime: "9999-12-08",
+        .get(store.state.serverAddr2 + "/countrySearch", {
+          params: {
+            country: store.state.searchLocation[0],
+            startTime: 0,
+            endTime: 1,
+            number: 1,
           },
-          roomCount: 1,
+          headers: {
+            token: store.state.userToken,
+          },
         })
         .then(
           (res) => {
-            showList.data = res.data.hotelList;
+            console.log(res);
+            for (var i = 0; i < res.data.length; i++) {
+              res.data[i].pictures = res.data[i].pictures.split(";")[0];
+            }
+            showList.data = res.data;
+            console.log(store.state.searchLocation[0]);
+            console.log(res);
           },
           (err) => {
             console.log(err);
@@ -235,12 +223,17 @@ export default {
         );
     } else if (store.state.searchHotelListType === "typeSearch") {
       http
-        .post(store.state.serverAddr + "/typeSearch", {
-          hotelType: store.state.searchType,
+        .get(store.state.serverAddr2 + "/typeSearch", {
+          params: { type: store.state.searchType },
+          headers: { token: store.state.userToken },
         })
         .then(
           (res) => {
-            showList.data = res.data.hotelList;
+            console.log(res);
+            for (var i = 0; i < res.data.length; i++) {
+              res.data[i].pictures = res.data[i].pictures.split(";")[0];
+            }
+            showList.data = res.data;
           },
           (err) => {
             console.log(err);
@@ -264,46 +257,82 @@ export default {
         send_location += formData.location[formData.location.length - 1];
       }
 
-      if (formData.selectTime[0] === undefined) send_checkinTime = "0000-00-00";
-      else send_checkinTime = formData.selectTime[0];
+      store.state.searchCheckinTime = formData.selectTime[0];
 
-      if (formData.selectTime[1] === undefined)
-        send_checkoutTime = "9999-01-01";
-      else send_checkoutTime = formData.selectTime[1];
+      store.state.searchCheckoutTime = formData.selectTime[1];
 
-      if (formData.roomNumber === undefined) send_roomCount = 1;
-      else send_roomCount = formData.roomNumber;
+      console.log(store.state.searchCheckinTime);
+      console.log(store.state.searchCheckoutTime);
+
+      store.state.searchPeopleNumber = formData.roomNumber;
 
       http
-        .post(store.state.serverAddr + "/fullSearch", {
-          location: send_location,
-          selectTime: {
-            checkinTime: send_checkinTime,
-            checkoutTime: send_checkoutTime,
+        .get(store.state.serverAddr2 + "/fullSearch", {
+          params: {
+            location: send_location,
+            startTime: dateDifference(
+              formatDate(currentDate, "yyyy-mm-dd"),
+              store.state.searchCheckinTime
+            ),
+            endTime: dateDifference(
+              formatDate(currentDate, "yyyy-mm-dd"),
+              store.state.searchCheckoutTime
+            ),
+            number: store.state.searchPeopleNumber,
           },
-          roomCount: send_roomCount,
+          headers: { token: store.state.userToken },
         })
         .then(
           (res) => {
-            showList.data = res.data.hotelList;
+            // showList.data = res.data.hotelList;
+            console.log(res);
+            for (var i = 0; i < res.data.length; i++) {
+              res.data[i].pictures = res.data[i].pictures.split(";")[0];
+            }
+            showList.data = res.data;
+            console.log(res.data);
           },
           (err) => {
             console.log(err);
           }
         );
     }
-    function BookHotel(hotelId) {
-      store.state.searchHotelId = hotelId;
+    function BookHotel(id) {
+      store.state.searchHotelId = id;
       router.push("HotelDetail");
+    }
+
+    //将yyyy-mm-dd格式的时间转化为数字
+    function time2time(timeStr) {
+      var time = new Date(timeStr);
+      // console.log(timeStr)
+      // console.log(time)
+      // console.log(time.getFullYear() + " " + time.getMonth() + " " + time.getDate())
+      return time;
+    }
+    //计算两个日期之间的天数
+    function dateDifference(sDate1, sDate2) {
+      //sDate1和sDate2是2006-12-18格式
+      let dateSpan, iDays;
+      sDate1 = Date.parse(sDate1);
+      sDate2 = Date.parse(sDate2);
+      dateSpan = sDate2 - sDate1;
+      dateSpan = Math.abs(dateSpan);
+      iDays = Math.floor(dateSpan / (24 * 3600 * 1000));
+      return iDays;
     }
     return {
       formData,
       options,
       imgFitContain,
       showList,
+      currentDate,
 
       SearchHotel,
       BookHotel,
+      formatDate,
+      time2time,
+      dateDifference,
     };
   },
 };
