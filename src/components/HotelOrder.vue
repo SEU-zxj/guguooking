@@ -302,7 +302,7 @@ export default ({
             dateSpan = sDate2 - sDate1
             dateSpan = Math.abs(dateSpan)
             iDays = Math.floor(dateSpan / (24 * 3600 * 1000))
-            return (iDays - 1)
+            return iDays
         }
         store.state.totalPrice *= dateDifference(store.state.CurrentSelectTime[0], store.state.CurrentSelectTime[1])
         const order = ref({
@@ -410,21 +410,21 @@ export default ({
                     //触发成功验证表单，调用接口
                     for(let i in store.state.bookRoomInfo){
                         http.post(
-                            store.state.serverAddr + "/orderSubmit",{
-                                params: {
-                                    hotelId: store.state.searchHotelId,
-                                    roomId: store.state.bookRoomInfo[i].roomId,
-                                    creationTime: getCreationTime(),
-                                    amount: store.state.bookRoomInfo[i].roomPrice * store.state.bookRoomInfo[i].roomNumber,//该种房间总价
-                                    number: store.state.bookRoomInfo[i].roomNumber,
-                                    startTime: getCurrentSelectTime(store.state.CurrentSelectTime)[0],
-                                    endTime: getCurrentSelectTime(store.state.CurrentSelectTime)[1],
-                                    userEmail: orderForm.userEmail,
-                                    otherNeed: orderForm.otherNeed,
-                                },
+                            store.state.serverAddr + "/orderSubmit",
+                            {
+                                hotelId: store.state.searchHotelId,
+                                roomId: store.state.bookRoomInfo[i].roomId,
+                                creationTime: getCreationTime(),
+                                amount: store.state.bookRoomInfo[i].roomPrice * store.state.bookRoomInfo[i].roomNumber,//该种房间总价
+                                number: store.state.bookRoomInfo[i].roomNumber,
+                                startTime: getCurrentSelectTime(store.state.CurrentSelectTime)[0],
+                                endTime: getCurrentSelectTime(store.state.CurrentSelectTime)[1],
+                                email: orderForm.userEmail,
+                                specialAsk: orderForm.otherNeed,
+                            },
+                            {
                                 headers: { token: store.state.userToken }
                             }
-                            
                         ).then(
                             (res) => {
                                 console.log(res)
@@ -488,6 +488,12 @@ export default ({
             dateDifference,
         }
     },
+    mounted() {
+        console.log("房间：")
+        console.log(store.state.bookRoomInfo)
+        console.log("价格：")
+        console.log(store.state.totalPrice)
+    }
 })
 </script>
 

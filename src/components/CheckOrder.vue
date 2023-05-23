@@ -425,14 +425,16 @@ export default {
     function SubmitComment() {
       dialogCommentVisible.value = false;
       http
-        .post(store.state.serverAddr + "/commentSubmit", {
-          params:{
+        .post(store.state.serverAddr + "/commentSubmit", 
+          {
             order_id: currentHotelId.value,
             level: rateValue.value,
             comment: commentText.value,
           },
-          headers: { token: store.state.userToken }
-        })
+          {
+            headers: { token: store.state.userToken }
+          }
+        )
         .then(
           (res) => {
             if (res.data.code === "0") {
