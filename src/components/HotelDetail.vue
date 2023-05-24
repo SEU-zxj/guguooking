@@ -1,130 +1,201 @@
 <template>
-  <div class="HotelDetailHeader">
-    <h1>{{ detailInfo.data.name }}</h1>
-    <p>{{ detailInfo.data.location }} | {{ detailInfo.data.address }}</p>
-  </div>
-  <el-button @click="HandleClick"></el-button>
-  <div class="ImageWallBox">
-    <el-carousel
-      :interval="4000"
-      indicator-position="outside"
-      style="width: 100%"
-      height="50vh"
-    >
-      <el-carousel-item
-        v-for="item in detailInfo.data.pictures.length"
-        :key="item"
-        style="width: 100%; height: 100%"
+  <div class = "HotelDetail-layout">
+    <div class="HotelDetailHeader">
+      <h1>{{ detailInfo.data.name }}</h1>
+      <p>{{ detailInfo.data.location }} | {{ detailInfo.data.address }}</p>
+    </div>
+
+    <div class="ImageWallBox">
+      <el-carousel
+        :interval="4000"
+        indicator-position="outside"
+        style="width: 100%;border-radius: 16px;"
+        height="50vh"
       >
-        <el-image
-          :src="detailInfo.data.pictures[item - 1]"
+        <el-carousel-item
+          v-for="item in detailInfo.data.pictures.length"
+          :key="item"
           style="width: 100%; height: 100%"
-          :fit="imgFitContain"
-        ></el-image>
-      </el-carousel-item>
-    </el-carousel>
-  </div>
-  <div class="TagBox">
-    <el-tag class="tag" v-for="o in activeTag" :key="o" type="success">
-      {{ o }}
-    </el-tag>
-  </div>
-
-  <div class="descriptionBox">
-    <h2>体验{{ detailInfo.data.name }}的优质服务，在这里你就是明星！</h2>
-    <el-text class="introBox">{{ detailInfo.data.introduction }}</el-text>
-  </div>
-
-  <div class="roomTableBox">
-    <h2>空房情况</h2>
-    <div class="SearchNewEmptyRoomBox">
-      <div class="chooseInnerBox">
-        <p>选择时间</p>
-        <el-date-picker
-          v-model="searchTime"
-          value-format="YYYY-MM-DD"
-          type="daterange"
-          range-separator="To"
-          start-placeholder="Start date"
-          end-placeholder="End date"
-        />
-      </div>
-      <div class="chooseInnerBox">
-        <p>选择人数</p>
-        <el-input-number v-model="searchPeopleNumber" placeholder="·位客人" />
-      </div>
-      <div class="chooseInnerBox">
-        <el-button
-          type="primary"
-          @click="SearchNewEmptyRoom"
-          style="margin-top: 30%"
-          >更改搜索条件</el-button
         >
-      </div>
+          <el-image
+            :src="detailInfo.data.pictures[item - 1]"
+            style="width: 100%; height: 100%"
+            :fit="imgFitContain"
+          ></el-image>
+        </el-carousel-item>
+      </el-carousel>
     </div>
-    <el-table :data="emptyRoomData.data" border style="width: 100%">
-      <el-table-column prop="roomType" label="房间类型" width="180" />
-      <el-table-column prop="bedType" label="简介" width="180" />
-      <el-table-column prop="number" label="可住人数" />
-      <el-table-column prop="price" label="价格" />
-      <el-table-column label="预定" width="200">
-        <template #default="scope">
-          <el-input-number
-            v-model="bookRoomCount.data[scope.$index].roomNumber"
-            :min="0"
-            :max="scope.row.available"
-          />
-        </template>
-      </el-table-column>
-    </el-table>
-    <div style="margin: 2% 0 0 80%">
-      <el-button type="primary" @click="BookRoomNow">现在就预定</el-button>
-    </div>
-  </div>
-
-  <div class="commentBox">
-    <h2>住客点评</h2>
-    <el-tag>平均{{ commentInfo.data.avgScore }}分</el-tag>
-    <el-text class="strongText">
-      {{ commentInfo.data.commentNumber }}条用户评论
-    </el-text>
-    <div class="commentCardBox">
-      <el-card
-        v-for="o in commentInfo.data.commentList.length"
-        :key="o"
-        style="width: 25%"
-      >
-        <template #header>
-          <div class="card-header">
-            <span>{{ commentInfo.data.commentList[o - 1].phone }}</span>
-            <el-tag>{{ commentInfo.data.commentList[o - 1].level }}</el-tag>
-          </div>
-        </template>
-        <div class="text item">
-          {{ commentInfo.data.commentList[o - 1].comment }}
-        </div>
-      </el-card>
-    </div>
-  </div>
-  <div style="height: 10vh"></div>
-  <div class="BottomInfoBox">
-    <el-row :gutter="30" style="width: 100%; height: 100%">
-      <el-col :span="14" :offset="1" class="linkInfoBox">
-        <el-link type="primary" href="https://element-plus.org" target="_blank"
-          >GitHub仓库</el-link
-        >
-        <el-link type="primary" href="https://element-plus.org" target="_blank"
-          >做的不错? 老板v一杯coffee?</el-link
-        >
-      </el-col>
-      <el-col :span="8">
+    <div class="TagBox">
+      <h3>热门设施/服务</h3>
+      <el-tag class="tag" v-for="o in activeTag" :key="o" type="success">
         <el-image
-          :src="require('@/assets/logo-remove-white.png')"
-          :fit="imgFitContain"
-        ></el-image>
-      </el-col>
-    </el-row>
+          style="width: 30px; height: 30px;vertical-align: middle;margin-right: 5px;"
+          :src="require( '@/assets/tag/' + o.icon)"
+        />
+        <el-text style="vertical-align: middle;font-size: medium;color: green;">{{ o.tag }}</el-text>
+      </el-tag>
+    </div>
+
+    <el-divider />
+
+    <div class="descriptionBox">
+      <h2>体验{{ detailInfo.data.name }}的优质服务，在这里你就是明星！</h2>
+      <div style="margin: 0 3%;">
+        <el-text class="introBox" >{{ detailInfo.data.introduction }}</el-text>
+      </div>
+      
+    </div>
+
+    <el-divider />
+
+    <div class="roomTableBox">
+      <h2>空房情况</h2>
+      <el-row
+        :gutter="3"
+        style="
+          background-color: #ffb700;
+          border-radius: 5px;
+          height: 40px;
+          padding: 3px 1px;
+          width: 83.5%;
+          margin-bottom: 20px;
+        "
+      >
+        <el-col :span="12" style="padding-right: 22px;">
+          <el-date-picker
+            v-model="searchTime"
+            value-format="YYYY-MM-DD"
+            type="daterange"
+            range-separator="To"
+            start-placeholder="Start date"
+            end-placeholder="End date"
+            style="width: 100%;height: 100%;"
+          />
+        </el-col>
+        <el-col :span="8">
+          <el-input-number v-model="searchPeopleNumber" placeholder="·位客人" style="width: 100%;height: 100%;"/>
+        </el-col>
+        <el-col :span="4">
+          <el-button
+            type="primary"
+            @click="SearchNewEmptyRoom"
+            style="width: 100%;height: 100%;"
+            color="black"
+            >更改搜索条件</el-button
+          >
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="10">
+        <el-col :span="20">
+          <el-table :data="emptyRoomData.data" border style="width: 100%">
+            <el-table-column prop="roomType" label="房间类型" width="180" />
+            <el-table-column prop="bedType" label="简介" width="180" />
+            <el-table-column prop="number" label="可住人数" />
+            <el-table-column prop="price" label="价格" />
+            <el-table-column label="预定" width="200">
+              <template #default="scope">
+                <el-input-number
+                  v-model="bookRoomCount.data[scope.$index].roomNumber"
+                  :min="0"
+                  :max="scope.row.available"
+                />
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+        <el-col :span="4" style="padding-left: 10px;padding-right: 10px;">
+          <el-button @click="BookRoomNow" style="width: 100%;height: 40px;font-size: large;" color= "#003b95">现在就预定</el-button>
+          <div style="margin-top: 20px;margin-left: 10px;font-size: small;">
+            <li>只需两分钟</li>
+            <li>立即确认</li>
+            <li>不收取预订手续费或信用卡手续费！</li>
+          </div>
+          
+        </el-col>
+      </el-row>
+      
+    </div>
+
+    <el-divider />
+
+    <div class="commentBox">
+      <h2>住客点评</h2>
+      <el-row :gutter="0">
+        <el-col :span="1">
+          <el-tag style="width: 45px;height: 45px;border-radius: 8px 8px 8px 0px;background-color: #003b95;color: white;border: 0px;font-size: large;">
+            {{ commentInfo.data.avgScore }}
+          </el-tag>
+        </el-col>
+        <el-col :span="12" style="padding-top: 8px;padding-left: 10px;">
+          <el-text v-if="commentInfo.data.avgScore >= 9.0" style="font-size: large;" tag="b">好极了</el-text>
+          <el-text v-if="commentInfo.data.avgScore >= 8.0 && commentInfo.data.avgScore < 9.0" style="font-size: large;" tag="b">很好！</el-text>
+          <el-text v-if="commentInfo.data.avgScore >= 7.0 && commentInfo.data.avgScore < 8.0" style="font-size: large;" tag="b">比较好</el-text>
+          <el-text v-if="commentInfo.data.avgScore >= 6.0 && commentInfo.data.avgScore < 7.0" style="font-size: large;" tag="b">一般</el-text>
+          <el-text v-if="commentInfo.data.avgScore < 6.0" style="font-size: large;" tag="b">比较差</el-text>
+          <el-text class="strongText">
+            {{ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + commentInfo.data.commentNumber }}条用户评论
+          </el-text>
+        </el-col>
+      </el-row>
+      
+      
+      <div class="commentCardBox">
+        <el-card
+          v-for="o in commentInfo.data.commentList.length"
+          :key="o"
+          style="width: 32%"
+          shadow="never"
+        >
+          <template #header>
+              <el-row :gutter="10">
+                <el-col :span="4">
+                  <el-avatar v-if="o === 1" style="background-color: #37448c;"> 
+                    {{ commentInfo.data.commentList[o - 1].phone.slice(0,2) }} 
+                  </el-avatar>
+                  <el-avatar v-if="o === 2" style="background-color: #cd3919;"> 
+                    {{ commentInfo.data.commentList[o - 1].phone.slice(0, 2) }} 
+                  </el-avatar>
+                  <el-avatar v-if="o === 3" style="background-color: #799432;"> 
+                    {{ commentInfo.data.commentList[o - 1].phone.slice(0, 2) }} 
+                  </el-avatar>
+                </el-col>
+                <el-col :span="16" style="padding-top: 10px;"><span>{{ commentInfo.data.commentList[o - 1].phone }}</span></el-col>
+                <el-col :span="4" style="padding-top: 0px;">
+                  <el-tag style="width: 40px;height: 40px;border-radius: 8px 8px 8px 0px;font-size: medium;">
+                    {{ commentInfo.data.commentList[o - 1].level }}
+                  </el-tag>
+                </el-col>
+              </el-row>
+          </template>
+          <div class="text item">
+            {{ commentInfo.data.commentList[o - 1].comment }}
+          </div>
+        </el-card>
+      </div>
+    </div>
   </div>
+
+  
+  <div style="height: 10vh"></div>
+    <div class="BottomInfoBox">
+      <el-row :gutter="30" style="width: 100%; height: 100%">
+        <el-col :span="14" :offset="1" class="linkInfoBox">
+          <el-link type="primary" href="https://element-plus.org" target="_blank"
+            >GitHub仓库</el-link
+          >
+          <el-link type="primary" href="https://element-plus.org" target="_blank"
+            >做的不错? 老板v一杯coffee?</el-link
+          >
+        </el-col>
+        <el-col :span="8">
+          <el-image
+            :src="require('@/assets/logo-remove-white.png')"
+            :fit="imgFitContain"
+          ></el-image>
+        </el-col>
+      </el-row>
+    </div>
 </template>
 
 <script>
@@ -187,18 +258,32 @@ export default {
       },
     });
     var tagIndex = [
-      "婴儿托管",
+      "独立卫浴",
       "室内泳池",
-      "健康中心",
-      "秀发护理",
-      "行李托管",
-      "客房服务",
-      "早饭提供",
+      "急救包",
+      "可用厨房",
+      "空调",
+      "全天热水",
+      "餐饮提供",
       "运动中心",
-      "航班接送",
-      "室内酒吧",
+      "洗衣机",
+      "免费停车",
       "无障碍设施",
       "免费WiFi",
+    ];
+    var tagIcon = [
+      "01.svg",
+      "02.svg",
+      "03.svg",
+      "04.svg",
+      "05.svg",
+      "06.svg",
+      "07.svg",
+      "08.svg",
+      "09.svg",
+      "10.svg",
+      "11.svg",
+      "WiFi.svg",
     ];
     const imgFitContain = "cover";
     const emptyRoomData = reactive({
@@ -351,7 +436,7 @@ export default {
 
           bookRoomCount.data = [];
           //根据返回的空房数量初始化记录预定房间数量的数组
-          for (var i = 0; i < res.data.length; i++) {
+          for (let i = 0; i < res.data.length; i++) {
             bookRoomCount.data.push({
               roomId: res.data[i].id,
               roomName: res.data[i].roomType + res.data[i].bedType,
@@ -434,8 +519,13 @@ export default {
         tags.push(detailInfo.data.label[i]);
       }
 
-      for (var i = 0; i < tags.length; i++) {
-        if (tags[i] === "1") showTag.push(tagIndex[i]);
+      for (let i = 0; i < tags.length; i++) {
+        if (tags[i] === "1"){
+          showTag.push({
+            tag: tagIndex[i],
+            icon: tagIcon[i],
+          });
+        } 
       }
       return showTag;
     });
@@ -495,6 +585,7 @@ export default {
       bookRoomCount,
       searchTime,
       searchPeopleNumber,
+      tagIcon,
 
       HandleClick,
       activeTag,
@@ -503,6 +594,7 @@ export default {
       SearchNewEmptyRoom,
       dateDifference,
       formatDate,
+
     };
   },
   mounted() {},
@@ -510,53 +602,54 @@ export default {
 </script>
 
 <style scoped>
+.HotelDetail-layout {
+  margin-left: 11.5%;
+  margin-right: 11.5%;
+}
 .HotelDetailHeader {
   margin-left: 2%;
 }
 .ImageWallBox {
-  width: 90%;
   margin-left: 5%;
+  margin-top: 30px;
+  margin-bottom: 50px;
+  width: 90%;
   height: 50vh;
 }
 
 .TagBox {
-  margin: 2% 10%;
-  width: 80%;
-  justify-content: center;
+  margin-bottom: 50px;
+  width: 90%;
+  margin-left: 5%;
 }
 .tag {
-  margin: 1% 5%;
+  margin: 5px 7px;
+  height: 40px;
+  width: 170px;
+  border-radius: 8px;
 }
 .descriptionBox {
-  margin: 0 2%;
-  width: 80%;
+  width: 100%;
 }
 .introBox {
   line-height: 30px;
 }
 .roomTableBox {
-  margin: 0 2%;
-  width: 90%;
+  width: 100%;
 }
 .commentBox {
-  margin: 0 2%;
-  width: 90%;
+  width: 100%;
 }
 .strongText {
-  margin-left: 50%;
+  margin-left: -20px;
   font-style: italic;
-  font-weight: bold;
-  font-size: larger;
+  font-size: large;
 }
 .commentCardBox {
   width: 100%;
   display: flex;
   justify-content: space-between;
-}
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  margin-top: 20px;
 }
 
 .BottomInfoBox {

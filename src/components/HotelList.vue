@@ -1,22 +1,27 @@
 <template>
   <div class="TotleListBox">
-    <el-row :gutter="40" style="width: 100%">
-      <el-col :span="7" :offset="0" style="height: 50vh">
-        <el-affix :offset="120" style="width: 100%">
-          <el-card style="width: 100%; margin: 2% 2%" shadow="always">
+    <el-row :gutter="30">
+      <el-col :span="6" :offset="0" style="height: 50vh;">
+        <el-affix style="width: 100%">
+          <el-card style="width: 100%; margin-top: 20px;border-radius: 8px;" shadow="always">
+            <el-row style="border-radius: 7px;border: solid 3px #ffe299; margin: -15px;">
+              <el-text style="font-size: large;color: black;margin: 10px;">境内外特价搜不停</el-text>
+            </el-row>
             <el-form
               label-width="auto"
               :model="formData"
-              style="max-width: 100%"
+              style="max-width: 100%;margin-top: 40px;"
+              label-position="top"
             >
               <el-form-item label="地点" class="formItem">
                 <el-cascader
                   v-model="formData.location"
                   :options="options"
                   placeholder="请选择地点"
+                  style="border-radius: 8px;"
                 />
               </el-form-item>
-              <el-form-item label="TimeRange" class="formItem">
+              <el-form-item label="起始时间" class="formItem">
                 <el-date-picker
                   v-model="formData.selectTime"
                   value-format="YYYY-MM-DD"
@@ -24,22 +29,21 @@
                   range-separator="To"
                   start-placeholder="Start"
                   end-placeholder="End"
-                  size="small"
+                  style="border-radius: 8px;"
                 />
               </el-form-item>
-              <el-form-item label="RoomNumber" class="formItem">
-                <el-input-number v-model="formData.roomNumber" :min="1" />
+              <el-form-item label="客房数量" class="formItem">
+                <el-input-number v-model="formData.roomNumber" :min="1" style="border-radius: 8px;"/>
               </el-form-item>
-              <div class="SearchButtonBox">
-                <el-button style="margin-left: 70%" @click="SearchHotel"
-                  >🔍搜索</el-button
-                >
+
+              <div style="text-align: center;margin-top: 30px;">
+                <el-button @click="SearchHotel" style="width: 100%;font-size: medium;height: 40px;" color="#313437">搜索</el-button>
               </div>
             </el-form>
           </el-card>
         </el-affix>
       </el-col>
-      <el-col :span="16">
+      <el-col :span="18" >
         <div
           v-for="o in showList.data.length"
           :key="o"
@@ -57,8 +61,14 @@
               </el-col>
               <el-col :span="16">
                 <el-row style="width: 100%">
-                  <p class="HotelName">{{ showList.data[o - 1].name }}</p>
-                  <p>{{ showList.data[o - 1].level }}分</p>
+                  <el-col :span="20">
+                    <p class="HotelName">{{ showList.data[o - 1].name }}</p>
+                  </el-col>
+                  <el-col :span="4" style="text-align: right;padding-top: 20px;">
+                    <el-tag style="border-radius: 8px 8px 8px 0px;background-color: #003b95;width: 45px;height: 45px;">
+                      <el-text style="color: white;font-size: large;" tag="b">{{ showList.data[o - 1].level }}</el-text>
+                    </el-tag>
+                  </el-col>
                 </el-row>
                 <el-row style="width: 100%">
                   <el-text class="CommentExample" style="width: 60%" truncated
@@ -71,13 +81,10 @@
                     >{{ showList.data[o - 1].price }}元</el-text
                   >
                 </el-row>
-                <el-row style="width: 100%">
-                  <el-button
-                    style="margin-left: 80%"
-                    @click="BookHotel(showList.data[o - 1].id)"
-                    >立即预定！</el-button
-                  >
-                </el-row>
+                <div style="text-align: right;">
+                    <el-button @click="BookHotel(showList.data[o - 1].id)" color="#006ce4" style="font-size: medium;height: 40px;">
+                      &nbsp;&nbsp;查看可定选项&nbsp;&nbsp;</el-button>
+                    </div>
               </el-col>
             </el-row>
           </el-card>
@@ -85,6 +92,7 @@
       </el-col>
     </el-row>
   </div>
+
   <div class="BottomInfoBox">
     <el-row :gutter="30" style="width: 100%; height: 100%">
       <el-col :span="15" :offset="1" class="linkInfoBox">
@@ -107,7 +115,7 @@
 </template>
 
 <script>
-import { reactive, ref } from "vue";
+import { reactive } from "vue";
 import router from "@/router"; // 引入userRouter
 import http from "@/plugins/axiosInstance";
 import store from "@/store";
@@ -356,12 +364,13 @@ export default {
 
 <style scoped>
 .TotleListBox {
-  width: 100%;
+  margin-left: 11.5%;
+  margin-right: 11.5%;
 }
 
-.formItem {
-  padding: 5% 0;
-}
+.formItem .el-form-item__label{
+    color: black;
+  }
 
 .SearchButtonBox {
   width: 100%;
@@ -373,7 +382,6 @@ export default {
   margin: 2%;
 }
 .HotelName {
-  padding-right: 60%;
   font-size: 20px;
   font-weight: bold;
 }
