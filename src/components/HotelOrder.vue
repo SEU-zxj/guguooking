@@ -507,7 +507,7 @@ export default ({
   margin-bottom: 50px;
 }
 .aside-card {
-    width: 100%;
+    width: 97%;
     border-radius: 8px;
     margin-bottom: 10px;
 }
