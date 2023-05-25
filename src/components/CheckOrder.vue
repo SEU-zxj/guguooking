@@ -40,8 +40,8 @@
                   <el-text size="large">{{ order.hotelLocation }}</el-text>
                   <!-- <el-text style="color: #000000;font-size: large;" tag="b">{{ order.hotelId }}</el-text> -->
                 </el-col>
-                <el-col :span="9" style="text-align: right;">
-                  <el-text >
+                <el-col :span="9" style="text-align: right">
+                  <el-text>
                     {{ "创建时间：" + order.createTime }}
                   </el-text>
                 </el-col>
@@ -51,13 +51,15 @@
                     content="删除该预订"
                     placement="bottom-end"
                     ><el-button
-                      style="position: absolute;
+                      style="
+                        position: absolute;
                         top: 0;
                         right: 0;
                         bottom: 0;
                         margin: auto;
                         width: 50px;
-                        height: 50px;"
+                        height: 50px;
+                      "
                       @click="removeOrder(index)"
                     >
                       <el-image
@@ -110,14 +112,24 @@
                         :src="require('@/assets/order/time.svg')"
                       />
                       <el-text>
-                        {{ (time2time(order.checkinTime).getHours() - 1).toString() + ":00至"
-                          +(time2time(order.checkinTime).getHours() + 1).toString() + ":00" }}
+                        {{
+                          (
+                            time2time(order.checkinTime).getHours() - 1
+                          ).toString() +
+                          ":00至" +
+                          (
+                            time2time(order.checkinTime).getHours() + 1
+                          ).toString() +
+                          ":00"
+                        }}
                       </el-text>
                     </el-col>
                     <el-col
                       :span="5"
-                      style="border-right: solid 1px var(--el-border-color);
-                        border-radius: 0%;"
+                      style="
+                        border-right: solid 1px var(--el-border-color);
+                        border-radius: 0%;
+                      "
                     >
                       <el-text>退房时间</el-text><br />
                       <el-text
@@ -143,7 +155,10 @@
                     </el-col>
                     <el-col
                       :span="6"
-                      style="border-right: solid 1px var(--el-border-color);border-radius: 0%;"
+                      style="
+                        border-right: solid 1px var(--el-border-color);
+                        border-radius: 0%;
+                      "
                     >
                       <el-row>
                         <el-col :span="11">
@@ -210,11 +225,17 @@
                           style="width: 25px; height: 25px"
                           :src="require('@/assets/menu_icon/my_icon/order.svg')"
                         />
-                        <el-text v-show="!order.commentWrited" style="font-size: medium">
+                        <el-text
+                          v-show="!order.commentWrited"
+                          style="font-size: medium"
+                        >
                           &nbsp;&nbsp;撰写评论</el-text
                         >
-                        <el-text v-show="order.commentWrited" style="font-size: medium">
-                            &nbsp;&nbsp;您已完成评论！</el-text
+                        <el-text
+                          v-show="order.commentWrited"
+                          style="font-size: medium"
+                        >
+                          &nbsp;&nbsp;您已完成评论！</el-text
                         >
                       </el-button></el-col
                     >
@@ -222,18 +243,18 @@
                 </el-col>
               </el-row>
             </el-card>
-          <!-- 撰写评论 对话框 -->
+            <!-- 撰写评论 对话框 -->
           </div>
           <el-dialog v-model="dialogCommentVisible" title="撰写评论">
             <el-row :gutter="5">
               <el-col :span="3"><span>评分</span></el-col>
               <el-col :span="12">
-                <el-rate 
-                v-model="rateValue" 
-                allow-half 
-                :texts="['oops', 'disappointed', 'normal', 'good', 'great']"
-                show-text
-                style="vertical-align: middle;"
+                <el-rate
+                  v-model="rateValue"
+                  allow-half
+                  :texts="['oops', 'disappointed', 'normal', 'good', 'great']"
+                  show-text
+                  style="vertical-align: middle"
                 />
               </el-col>
             </el-row>
@@ -241,22 +262,24 @@
               <el-col :span="3"><span>点评</span></el-col>
               <el-col :span="21">
                 <el-input
-                v-model="commentText"
-                :rows="2"
-                type="textarea"
-                placeholder="请在这里输入您的评论"
-              />
+                  v-model="commentText"
+                  :rows="2"
+                  type="textarea"
+                  placeholder="请在这里输入您的评论"
+                />
               </el-col>
             </el-row>
             <el-row>
-              <el-col :span="4" style="text-align: right;">
-                <el-button style="color: black;width: 100%;height: 100%;" @click="SubmitComment">提交评论</el-button>
+              <el-col :span="4" style="text-align: right">
+                <el-button
+                  style="color: black; width: 100%; height: 100%"
+                  @click="SubmitComment"
+                  >提交评论</el-button
+                >
               </el-col>
-              
             </el-row>
           </el-dialog>
         </div>
-
       </el-main>
 
       <el-footer>
@@ -329,14 +352,14 @@ export default {
     var numOfOrder = ref(1);
     const orders = ref([]);
     // const orders = ref([
-      // {
-      //   hotelId: "001", hotelName: "城市公园酒店",
-      //   hotelLocation: "雷克亚威科",
-      //   checkinTime: "", checkoutTime: "",
-      //   totalPrice: "2,080",
-      //   figURL: "https://img2.selfimg.com.cn/uedvoguecms/2020/08/18/1597736016_EEzaSy.jpg",
-      //   commentWrited: false,
-      // },
+    // {
+    //   hotelId: "001", hotelName: "城市公园酒店",
+    //   hotelLocation: "雷克亚威科",
+    //   checkinTime: "", checkoutTime: "",
+    //   totalPrice: "2,080",
+    //   figURL: "https://img2.selfimg.com.cn/uedvoguecms/2020/08/18/1597736016_EEzaSy.jpg",
+    //   commentWrited: false,
+    // },
     //   {
     //     hotelId: "002", hotelName: "Healing House GOD",
     //     hotelLocation: "仁川市，韩国",
@@ -384,8 +407,8 @@ export default {
           });
         });
 
-        console.log("用户订单：")
-        console.log(orders)
+      console.log("用户订单：");
+      console.log(orders);
     };
     //将yyyy-mm-dd格式的时间转化为数字
     const time2time = (timeStr) => {
@@ -428,14 +451,15 @@ export default {
     function SubmitComment() {
       dialogCommentVisible.value = false;
       http
-        .post(store.state.serverAddr + "/commentSubmit", 
+        .post(
+          store.state.serverAddr + "/commentSubmit",
           {
             order_id: currentHotelId.value,
             level: rateValue.value,
             comment: commentText.value,
           },
           {
-            headers: { token: store.state.userToken }
+            headers: { token: store.state.userToken },
           }
         )
         .then(
@@ -461,6 +485,83 @@ export default {
       rateValue.value = 0;
       commentText.value = "";
     }
+
+    //************************************************************
+    http
+      .get(store.state.serverAddr2 + "/orderCheck", {
+        params: {},
+        headers: { token: store.state.userToken },
+      })
+      .then(
+        (res) => {
+          console.log("查看订单：电话=" + store.state.userPhoneNumber),
+            console.log(res);
+
+          /* 订单数量 */
+          numOfOrder.value = res.data.length;
+
+          let item = {
+            hotelId: 0,
+            hotelName: "",
+            hotelLocation: "",
+            createTime: "",
+            checkinTime: "",
+            checkoutTime: "",
+            totalPrice: 0,
+            roomId: 0,
+            numOfroom: 0,
+            figURL: "",
+            commentWrited: false,
+          };
+          for (let i in res.data) {
+            item.hotelId = res.data[i].hotelId;
+            item.createTime = res.data[i].creationTime;
+            item.checkinTime = res.data[i].startTime;
+            item.checkoutTime = res.data[i].endTime;
+            item.totalPrice = res.data[i].amount;
+            item.roomId = res.data[i].roomId;
+            item.numOfroom = res.data[i].number;
+            item.commentWrited = res.data[i].has_comment;
+
+            orders.value.push(item);
+          }
+
+          console.log("订单数量=" + numOfOrder.value);
+          for (var i = 0; i < numOfOrder.value; i++) {
+            console.log("订单-酒店" + i);
+            http
+              .get(store.state.serverAddr2 + "/getInformation", {
+                params: {
+                  hotelId: res.data[i].hotelId,
+                },
+                headers: { token: store.state.userToken },
+              })
+              .then(
+                (res) => {
+                  console.log(" 订单-酒店" + i);
+                  console.log(res);
+
+                  orders.value[i].hotelName = res.data[0].name;
+                  orders.value[i].hotelLocation =
+                    res.data[0].location + " " + res.data[0].address;
+                  orders.value[i].figURL = res.data[0].pictures[0];
+
+                  console.log(orders.value[i]);
+                },
+                (err) => {
+                  console.log(err);
+                }
+              );
+          }
+        },
+        (err) => {
+          console.log("查看订单出错了!");
+          console.log(err);
+        }
+      );
+
+    console.log("用户订单：");
+    console.log(orders.value);
 
     return {
       numOfOrder,
@@ -489,82 +590,13 @@ export default {
     //   .then(
     //     (res) => {
     //       console.log("全局电话=" + store.userPhoneNumber), console.log(res);
-    //       this.orders = res.data.orderList;
+    //       orders = res.data.orderList;
     //     },
     //     (err) => {
     //       console.log(err);
     //     }
     //   );
-    http.get(store.state.serverAddr2 + "/orderCheck",{
-          params:{},
-          headers:{token: store.state.userToken}
-        }).then(
-          (res) => {
-            console.log("查看订单：电话=" + store.userPhoneNumber), console.log(res);
-
-            /* 订单数量 */
-            this.numOfOrder = res.data.length
-
-            let item = {
-              hotelId: 0, 
-              hotelName: "",
-              hotelLocation: "",
-              createTime: "",
-              checkinTime: "", checkoutTime: "",
-              totalPrice: 0,
-              roomId: 0,
-              numOfroom: 0,
-              figURL: "",
-              commentWrited: false,
-            }
-            for (let i in res.data){
-              item.hotelId = res.data[i].hotelId
-              item.createTime = res.data[i].creationTime
-              item.checkinTime = res.data[i].startTime
-              item.checkoutTime = res.data[i].endTime
-              item.totalPrice = res.data[i].amount
-              item.roomId = res.data[i].roomId
-              item.numOfroom = res.data[i].number
-              item.commentWrited = res.data[i].has_comment
-
-              this.orders.push(item)
-            }
-
-            console.log("订单数量=" + this.numOfOrder)
-            for(let i = 0; i < this.numOfOrder; i++){
-              console.log("订单-酒店" + i)
-              http.get(store.state.serverAddr2 + "/getInformation",{
-                params: {
-                  hotelId: res.data[i].hotelId,
-                },
-                headers: { token: store.state.userToken }
-              }).then(
-                (res) => {
-                  console.log(" 订单-酒店" + i)
-                  console.log(res)
-
-                  this.orders[i].hotelName = res.data[0].name
-                  this.orders[i].hotelLocation = res.data[0].location + " " + res.data[0].address
-                  this.orders[i].figURL = res.data[0].pictures[0]
-
-                  console.log(this.orders[i])
-                },
-                (err) => {
-                  console.log(err);
-                }
-              )
-            }
-          },
-          (err) => {
-            console.log("查看订单出错了!")
-            console.log(err);
-          }
-        )
-    console.log("用户订单：")
-    console.log(this.orders)
   },
-
-    
 };
 </script>
 

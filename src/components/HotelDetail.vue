@@ -3,7 +3,7 @@
     <h1>{{ detailInfo.data.name }}</h1>
     <p>{{ detailInfo.data.location }} | {{ detailInfo.data.address }}</p>
   </div>
-  <el-button @click="HandleClick"></el-button>
+  <!-- <el-button @click="HandleClick"></el-button> -->
   <div class="ImageWallBox">
     <el-carousel
       :interval="4000"
