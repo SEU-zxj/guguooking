@@ -255,6 +255,12 @@
           ></el-image>
         </el-col>
       </el-row>
+      <!-- <el-row :gutter="30" style="width: 100%; height: 100%">
+        <el-image
+          src="https://img.alicdn.com/tfs/TB1..50QpXXXXX7XpXXXXXXXXXX-40-40.png"
+        ></el-image>
+        <span>渝ICP备2023004802号</span>
+      </el-row> -->
     </div>
   </div>
 </template>
