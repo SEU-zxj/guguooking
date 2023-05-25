@@ -273,7 +273,7 @@
               <el-col :span="4" style="text-align: right">
                 <el-button
                   style="color: black; width: 100%; height: 100%"
-                  @click="SubmitComment"
+                  @click="SubmitComment()"
                   >提交评论</el-button
                 >
               </el-col>
@@ -464,10 +464,11 @@ export default {
       dialogCommentVisible.value = false;
       http
         .post(
-          store.state.serverAddr + "/commentSubmit",
+          store.state.serverAddr2 + "/commentSubmit",
           {
-            order_id: currentHotelId.value,
-            level: rateValue.value,
+            orderId: currentIndex.value,
+            hotelId: currentHotelId.value,
+            level: 2*rateValue.value,
             comment: commentText.value,
           },
           {
@@ -481,6 +482,7 @@ export default {
                 message: "撰写评论成功",
                 type: "success",
               });
+              console.log(currentIndex)
               orders.data[currentIndex.value].commentWrited = true;
             } else {
               ElMessage({
