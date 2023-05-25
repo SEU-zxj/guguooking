@@ -81,7 +81,13 @@ export default createStore({
                 },
               ],
             },
-          ]
+          ],
+
+        myColor: {
+          color1: "#535492",
+          color2: "#d8965e",
+          color3: "#efcaa1",
+        }
     },
     mutations: {
 

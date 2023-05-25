@@ -3,7 +3,7 @@
     <el-container>
       <el-main class="ordermain">
         <!-- 没有账单时 -->
-        <div v-if="orders.length === 0" style="margin-top: 7%">
+        <div v-if="numOfOrder === 0" style="margin-top: 7%">
           <el-empty
             description=" "
             :image="require('@/assets/orderEmpty.png')"
@@ -21,12 +21,12 @@
         </div>
 
         <!-- 有账单时 -->
-        <div v-if="orders.length > 0">
+        <div v-if="numOfOrder > 0">
           <el-text style="color: #000000; font-size: xx-large" tag="b"
             >订单和行程</el-text
           >
           <div
-            v-for="(order, index) in orders"
+            v-for="(order, index) in orders.data"
             :key="order"
             style="margin-top: 10px"
           >
@@ -341,7 +341,7 @@
 
 <script>
 // import { defineComponent } from '@vue/composition-api'
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import http from "@/plugins/axiosInstance";
 import store from "@/store/index";
@@ -350,32 +350,44 @@ export default {
   name: "CheckOrder",
   setup() {
     var numOfOrder = ref(1);
-    const orders = ref([]);
-    // const orders = ref([
-    // {
-    //   hotelId: "001", hotelName: "城市公园酒店",
-    //   hotelLocation: "雷克亚威科",
-    //   checkinTime: "", checkoutTime: "",
-    //   totalPrice: "2,080",
-    //   figURL: "https://img2.selfimg.com.cn/uedvoguecms/2020/08/18/1597736016_EEzaSy.jpg",
-    //   commentWrited: false,
-    // },
-    //   {
-    //     hotelId: "002", hotelName: "Healing House GOD",
-    //     hotelLocation: "仁川市，韩国",
-    //     checkinTime: "", checkoutTime: "",
-    //     totalPrice: "1,430",
-    //     figURL: "https://youimg1.c-ctrip.com/target/100o0x000000l33nt6FCA.jpg",
-    //     commentWrited: false,
-    //   },
-    //   {
-    //     hotelId: "003", hotelName: "塞韦索旅馆",
-    //     hotelLocation: "Via Ponte Seveso 18，中央车站，20125 米兰，意大利",
-    //     checkinTime: "", checkoutTime: "",
-    //     totalPrice: "1,258",
-    //     figURL: "https://youimg1.c-ctrip.com/target/100o0x000000l33nt6FCA.jpg",
-    //     commentWrited: false,
-    //   },])
+    // var orders = ref([]);
+    const orders = reactive({
+      data: [
+        {
+          hotelId: "001",
+          hotelName: "城市公园酒店",
+          hotelLocation: "雷克亚威科",
+          checkinTime: "",
+          checkoutTime: "",
+          totalPrice: "2,080",
+          figURL:
+            "https://img2.selfimg.com.cn/uedvoguecms/2020/08/18/1597736016_EEzaSy.jpg",
+          commentWrited: false,
+        },
+        {
+          hotelId: "002",
+          hotelName: "Healing House GOD",
+          hotelLocation: "仁川市，韩国",
+          checkinTime: "",
+          checkoutTime: "",
+          totalPrice: "1,430",
+          figURL:
+            "https://youimg1.c-ctrip.com/target/100o0x000000l33nt6FCA.jpg",
+          commentWrited: false,
+        },
+        {
+          hotelId: "003",
+          hotelName: "塞韦索旅馆",
+          hotelLocation: "Via Ponte Seveso 18，中央车站，20125 米兰，意大利",
+          checkinTime: "",
+          checkoutTime: "",
+          totalPrice: "1,258",
+          figURL:
+            "https://youimg1.c-ctrip.com/target/100o0x000000l33nt6FCA.jpg",
+          commentWrited: false,
+        },
+      ],
+    });
 
     const getOrders = () => {
       //获取订单
@@ -389,9 +401,9 @@ export default {
         .then(() => {
           console.log(index);
           if (index >= 0) {
-            orders.value.splice(index, 1);
-            numOfOrder.value = orders.value.length;
-            console.log(orders.value.length);
+            orders.data.splice(index, 1);
+            numOfOrder.value = orders.data.length;
+            console.log(orders.data.length);
             //接口
 
             ElMessage({
@@ -469,7 +481,7 @@ export default {
                 message: "撰写评论成功",
                 type: "success",
               });
-              orders.value[currentIndex.value].commentWrited = true;
+              orders.data[currentIndex.value].commentWrited = true;
             } else {
               ElMessage({
                 message: "出错了",
@@ -596,6 +608,78 @@ export default {
     //       console.log(err);
     //     }
     //   );
+
+    let that = this;
+    http
+      .get(store.state.serverAddr2 + "/orderCheck", {
+        params: {},
+        headers: { token: store.state.userToken },
+      })
+      .then(
+        (res) => {
+          console.log("查看订单：电话=" + store.userPhoneNumber),
+            console.log(res);
+
+          /* 订单数量 */
+          that.numOfOrder = res.data.length;
+
+          that.orders.data = [];
+
+          for (var i = 0; i < that.numOfOrder; i++) {
+            that.orders.data.push({
+              hotelId: res.data[i].hotelId,
+              hotelName: "",
+              hotelLocation: "",
+              createTime: res.data[i].creationTime,
+              checkinTime: res.data[i].startTime,
+              checkoutTime: res.data[i].endTime,
+              totalPrice: res.data[i].amount,
+              roomId: res.data[i].roomId,
+              numOfroom: res.data[i].number,
+              figURL: "",
+              commentWrited: res.data[i].has_comment,
+            });
+
+            console.log("用户订单：元素" + i);
+            console.log(that.orders.data);
+          }
+
+          console.log("订单数量=" + that.numOfOrder);
+          for (let i = 0; i < that.numOfOrder; i++) {
+            console.log("订单-酒店" + i);
+            http
+              .get(store.state.serverAddr2 + "/getInformation", {
+                params: {
+                  hotelId: res.data[i].hotelId,
+                },
+                headers: { token: store.state.userToken },
+              })
+              .then(
+                (res) => {
+                  console.log(" 订单-酒店" + i);
+                  console.log(res);
+
+                  that.orders.data[i].hotelName = res.data[0].name;
+                  that.orders.data[i].hotelLocation =
+                    res.data[0].location + " " + res.data[0].address;
+                  res.data[0].pictures = res.data[0].pictures.split(";");
+                  that.orders.data[i].figURL = res.data[0].pictures;
+
+                  console.log(i);
+                  console.log(that.orders.data[i]);
+                },
+                (err) => {
+                  console.log(err);
+                }
+              );
+          }
+          console.log(that.orders.data.length);
+        },
+        (err) => {
+          console.log("查看订单出错了!");
+          console.log(err);
+        }
+      );
   },
 };
 </script>
