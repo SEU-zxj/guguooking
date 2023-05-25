@@ -936,10 +936,10 @@ export default {
 
                   const form = unref(myLogForm);
                   form.resetFields();
-                  setTimeout(() => {
-                    //提示登录成功并0.5s后返回先前界面
-                    router.go(-1);
-                  }, 500);
+                  // setTimeout(() => {
+                  //   //提示登录成功并0.5s后返回先前界面
+                  //   router.go(-1);
+                  // }, 500);
                 } else {
                   ElMessage({
                     showClose: true,
